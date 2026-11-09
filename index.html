@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#eef1f4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0e1319" media="(prefers-color-scheme: dark)">
 <meta name="description" content="Trainingslogboek: sets, herhalingen, gewicht en ochtendgewicht naast het 10-wekenplan.">
-<title>Logboek 82,5</title>
+<title>Logboek</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -196,7 +196,9 @@ input.inp[type=date]{height:46px;padding-block:0}
 
 /* Tabs */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.tabs-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+.tabs-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tile.wide{grid-column:1/-1}
+.pl-row{grid-template-columns:minmax(0,1fr) auto}
 .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 4px 9px;border:0;background:transparent;color:var(--ink-2);font-weight:600;font-size:12.5px;cursor:pointer;position:relative;min-height:60px}
 .tab svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tab[aria-current="page"]{color:var(--accent)}
@@ -239,8 +241,8 @@ dialog::backdrop{background:var(--scrim)}
 <header class="top">
   <div class="top-in">
     <div class="brand">
-      <span class="brand-name">Logboek 82,5</span>
-      <span class="brand-sub" id="hdr-sub">Afvalplan 9 nov – 17 jan</span>
+      <span class="brand-name">Logboek</span>
+      <span class="brand-sub" id="hdr-sub">Stel je plan in</span>
     </div>
     <span class="sync" id="sync" data-s="busy"><span class="sync-dot"></span><span id="sync-txt">Verbinden…</span></span>
   </div>
@@ -254,7 +256,7 @@ dialog::backdrop{background:var(--scrim)}
       <label class="field" for="t-date">Datum training
         <input class="inp" type="date" id="t-date">
       </label>
-      <span class="wk-pill" id="t-week">Week 1<small>van 10</small></span>
+      <span class="wk-pill" id="t-week">Week</span>
     </div>
     <div class="scheme" id="t-scheme"></div>
     <div id="t-list" class="view"></div>
@@ -280,10 +282,10 @@ dialog::backdrop{background:var(--scrim)}
           <input class="inp" type="date" id="w-date" required>
         </label>
         <label class="field" for="w-kg">Gewicht (kg)
-          <input class="inp" id="w-kg" inputmode="decimal" autocomplete="off" placeholder="89,4">
+          <input class="inp" id="w-kg" inputmode="decimal" autocomplete="off" placeholder="0,0">
         </label>
         <label class="field full" for="w-waist">Taille in cm (optioneel, om de 2 weken)
-          <input class="inp" id="w-waist" inputmode="decimal" autocomplete="off" placeholder="98">
+          <input class="inp" id="w-waist" inputmode="decimal" autocomplete="off" placeholder="0">
         </label>
       </div>
       <button class="btn" type="submit" id="w-save">Gewicht opslaan</button>
@@ -291,6 +293,34 @@ dialog::backdrop{background:var(--scrim)}
     <div class="card" id="w-list-card">
       <h2>Gemeten</h2>
       <div id="w-list"></div>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section class="view" id="v-plan" aria-label="Plan" hidden>
+    <form class="card" id="p-form" novalidate>
+      <h2>Je plan</h2>
+      <p class="card-sub">Vul je startgewicht, je doelgewicht en de periode in. De app trekt daartussen een rechte lijn: het gewicht dat je per week ongeveer moet halen.</p>
+      <div class="w-grid">
+        <label class="field" for="p-start">Startdatum
+          <input class="inp" type="date" id="p-start">
+        </label>
+        <label class="field" for="p-end">Einddatum
+          <input class="inp" type="date" id="p-end">
+        </label>
+        <label class="field" for="p-kg0">Startgewicht (kg)
+          <input class="inp" id="p-kg0" inputmode="decimal" autocomplete="off" placeholder="0,0">
+        </label>
+        <label class="field" for="p-kg1">Doelgewicht (kg)
+          <input class="inp" id="p-kg1" inputmode="decimal" autocomplete="off" placeholder="0,0">
+        </label>
+      </div>
+      <p class="save-st" id="p-calc"></p>
+      <button class="btn" type="submit" id="p-save">Plan opslaan</button>
+    </form>
+    <div class="card">
+      <h2>Richtlijn per week</h2>
+      <div id="p-table"></div>
     </div>
   </section>
 
@@ -304,7 +334,7 @@ dialog::backdrop{background:var(--scrim)}
         <span><i class="lg avg"></i>weekgemiddelde</span>
         <span><i class="lg day"></i>dagwaarde</span>
         <span><i class="lg plan"></i>richtlijn uit je plan</span>
-        <span><i class="lg goal"></i>doel 82,5 kg</span>
+        <span><i class="lg goal"></i><span id="lg-goal">doel</span></span>
         <span><i class="lg tr"></i>training</span>
       </div>
     </div>
@@ -348,6 +378,9 @@ dialog::backdrop{background:var(--scrim)}
     <button class="tab" type="button" data-tab="overzicht">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M7.5 15l4-4 3 3 5-6"/></svg>Overzicht
     </button>
+    <button class="tab" type="button" data-tab="plan">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2.5 4L17 12H5"/></svg>Plan
+    </button>
   </div>
 </nav>
 
@@ -381,13 +414,10 @@ dialog::backdrop{background:var(--scrim)}
 (function(){
 'use strict';
 
-/* ---------- Plan ---------- */
-const START='2026-11-09';
-const START_KG=90.2;
-const PLAN=[90.2,89.0,88.2,87.4,86.6,85.8,85.0,84.6,84.1,83.3,82.5];
-const DAYS=70;
-const LS_DRAFT='logboek825-draft';
-const LS_PEND='logboek825-pending';
+/* ---------- Keys ---------- */
+const LS_SET='logboek-settings';
+const LS_DRAFT='logboek-draft';
+const LS_PEND='logboek-pending';
 
 /* ---------- Helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -397,17 +427,32 @@ const nf2=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:2});
 const nf0=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:0});
 const dfmt=new Intl.DateTimeFormat('nl-NL',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'});
 function parseD(s){const p=String(s).split('-').map(Number);return Date.UTC(p[0],p[1]-1,p[2])}
-function dayIndex(s){return Math.round((parseD(s)-parseD(START))/864e5)}
-function weekOf(s){return Math.floor(dayIndex(s)/7)+1}
 function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function fmtDate(s){return dfmt.format(new Date(parseD(s))).replace(/\.$/,'')}
 function num(v){if(v===''||v==null)return NaN;return parseFloat(String(v).replace(',','.'))}
 function fmtKg(v){return isNaN(v)?'':nf2.format(Math.round(v*100)/100)}
 function signed(v){return (v>0?'+':v<0?'−':'±')+nf1.format(Math.abs(v))}
-function planAt(day){const d=Math.max(0,Math.min(DAYS,day));const i=Math.floor(d/7),f=d/7-i;if(i>=10)return PLAN[10];return PLAN[i]+(PLAN[i+1]-PLAN[i])*f}
-function weekLabel(w){if(w<1)return 'Voor de start';if(w>10)return 'Na week 10';return 'Week '+w}
 function lsGet(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch(e){return def}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+(function migrateKeys(){try{const old=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^logboek\d+-(data|draft|lastbackup)$/.test(k))old.push(k)}for(const o of old){const n='logboek-'+o.split('-').pop();if(localStorage.getItem(n)==null)localStorage.setItem(n,localStorage.getItem(o));localStorage.removeItem(o)}}catch(e){}})();
+
+/* ---------- Plan (set in the app, stored on this phone) ---------- */
+const DATE_RE=/^\d{4}-\d{2}-\d{2}$/;
+function validPlan(p){return !!(p&&DATE_RE.test(p.startDate||'')&&DATE_RE.test(p.endDate||'')&&parseD(p.endDate)>parseD(p.startDate)&&typeof p.startKg==='number'&&typeof p.goalKg==='number'&&p.startKg>=30&&p.startKg<=300&&p.goalKg>=30&&p.goalKg<=300)}
+let settings=lsGet(LS_SET,null);if(!validPlan(settings))settings=null;
+function hasPlan(){return settings!==null}
+function addDays(s,n){return new Date(parseD(s)+n*864e5).toISOString().slice(0,10)}
+function totalDays(){return hasPlan()?Math.round((parseD(settings.endDate)-parseD(settings.startDate))/864e5)+1:0}
+function nWeeks(){return Math.max(1,Math.ceil(totalDays()/7))}
+function dayIndex(s){return hasPlan()?Math.round((parseD(s)-parseD(settings.startDate))/864e5):0}
+function weekOf(s){return hasPlan()?Math.floor(dayIndex(s)/7)+1:0}
+function planAt(day){const T=totalDays(),d=Math.max(0,Math.min(T,day));return settings.startKg+(settings.goalKg-settings.startKg)*d/T}
+function planEnd(n){return planAt(Math.min(n*7,totalDays()))}
+function weekMid(n){return (n-1)*7+Math.min(7,totalDays()-(n-1)*7)/2}
+function inLearn(wk){return hasPlan()&&wk>=1&&wk<=3}
+function weekLabel(w){if(!hasPlan())return 'Geen plan';if(w<1)return 'Voor de start';if(w>nWeeks())return 'Na week '+nWeeks();return 'Week '+w}
+const dlong=new Intl.DateTimeFormat('nl-NL',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
+function fmtLong(s){return dlong.format(new Date(parseD(s)))}
 let toastT=0;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600)}
 function armConfirm(btn,label,fn){
@@ -546,7 +591,7 @@ const EXTRAS=['triceps','biceps'];
 const ALL=[...PAIRS.flat(),...EXTRAS];
 
 /* ---------- State (stored on this phone) ---------- */
-const LS_DATA='logboek825-data',LS_BACKUP='logboek825-lastbackup';
+const LS_DATA='logboek-data',LS_BACKUP='logboek-lastbackup';
 const state={};
 const pend={};
 let store=lsGet(LS_DATA,null);
@@ -570,7 +615,7 @@ function lastByExercise(beforeDate,excludeId){
 }
 
 /* ---------- Draft (this device) ---------- */
-function defaultSets(wk){return wk<=3?2:3}
+function defaultSets(wk){return inLearn(wk)?2:3}
 function newDraft(date){
   date=date||todayStr();
   const n=defaultSets(weekOf(date)),last=lastByExercise(date,null),sets={};
@@ -617,7 +662,7 @@ function prevLine(id,last,maxOn){
   return `<p class="prev">Vorige keer, ${esc(fmtDate(last.date))}: ${ls.map(s=>esc(fmtKg(s.kg))+'×'+s.reps).join(' · ')}${tip}</p>`;
 }
 function card(id,last){
-  const ex=EX[id],rows=draft.sets[id],maxOn=weekOf(draft.date)>=4;
+  const ex=EX[id],rows=draft.sets[id],maxOn=!inLearn(weekOf(draft.date));
   return `<article class="ex" data-ex="${id}">
     <div class="ex-h"><span class="code">${ex.code}</span><div class="ex-t"><h3>${esc(ex.name)}</h3><p>${esc(ex.device)}</p></div><button class="info-btn" type="button" data-info="${id}" aria-label="Uitleg ${esc(ex.name)}">i</button></div>
     <div class="prev-w">${prevLine(id,last,maxOn)}</div>
@@ -629,8 +674,8 @@ function card(id,last){
 function renderTraining(){
   const wk=weekOf(draft.date),last=lastByExercise(draft.date,draft.sessionId);
   $('#t-date').value=draft.date;
-  $('#t-week').innerHTML=wk>=1&&wk<=10?`Week ${wk}<small>van 10</small>`:esc(weekLabel(wk));
-  $('#t-scheme').innerHTML=wk<=3
+  $('#t-week').innerHTML=hasPlan()&&wk>=1&&wk<=nWeeks()?`Week ${wk}<small>van ${nWeeks()}</small>`:esc(weekLabel(wk));
+  $('#t-scheme').innerHTML=inLearn(wk)
     ?`<span><b>T/m week 3: 2 sets van 12</b>, nog zonder maximale set. Kies een gewicht waarbij je na 12 herhalingen nog 3 over hebt.</span>`
     :`<span><b>3 sets van 12</b> met hetzelfde gewicht. De laatste set ga je maximaal: tot je techniek breekt of de pijn boven 3 op 10 komt.</span><span class="pinline"><span class="pin" aria-hidden="true"></span>Haal je 15 of meer in de laatste set, dan volgende training een stap zwaarder.</span>`;
   $('#t-list').innerHTML=PAIRS.map((p,i)=>`<div class="pair"><div class="pair-head">Duo ${i+1} · om en om</div>${p.map(id=>card(id,last[id])).join('')}</div>`).join('');
@@ -639,7 +684,7 @@ function renderTraining(){
   renderSaveStatus();
 }
 function renderPrev(){
-  const last=lastByExercise(draft.date,draft.sessionId),maxOn=weekOf(draft.date)>=4;
+  const last=lastByExercise(draft.date,draft.sessionId),maxOn=!inLearn(weekOf(draft.date));
   document.querySelectorAll('.ex').forEach(c=>{const w=c.querySelector('.prev-w');if(w)w.innerHTML=prevLine(c.dataset.ex,last[c.dataset.ex],maxOn)});
 }
 function renderSaveStatus(){
@@ -721,35 +766,43 @@ function saveWeight(ev){
 /* ---------- Overview ---------- */
 function weekAvg(ws,w){const arr=ws.filter(x=>weekOf(x.date)===w);return arr.length?arr.reduce((s,x)=>s+x.kg,0)/arr.length:null}
 function renderTiles(ws,ss){
-  const tw=weekOf(todayStr()),cw=Math.max(1,Math.min(10,tw));
+  if(!hasPlan()){$('#o-tiles').innerHTML='<div class="tile wide"><span class="tile-l">Plan</span><span class="tile-s">Stel eerst je plan in op het tabblad Plan: startgewicht, doelgewicht en periode.</span></div>';return}
+  const N=nWeeks(),cw=Math.max(1,Math.min(N,weekOf(todayStr())));
   let aw=cw,avg=weekAvg(ws,cw);
   if(avg==null){for(let w=cw-1;w>=1;w--){const a=weekAvg(ws,w);if(a!=null){avg=a;aw=w;break}}}
   const t1=avg==null
     ?`<div class="tile"><span class="tile-l">Weekgemiddelde</span><span class="tile-v">—</span><span class="tile-s">Vul je ochtendgewicht in</span></div>`
-    :`<div class="tile"><span class="tile-l">Gem. week ${aw}</span><span class="tile-v">${nf1.format(avg)}<small>kg</small></span><span class="tile-s">${signed(avg-START_KG)} kg sinds start</span></div>`;
+    :`<div class="tile"><span class="tile-l">Gem. week ${aw}</span><span class="tile-v">${nf1.format(avg)}<small>kg</small></span><span class="tile-s">${signed(avg-settings.startKg)} kg sinds start</span></div>`;
   let chip='';
-  if(avg!=null){const d=avg-planAt((aw-1)*7+3.5);chip=d<=0.1?`<span class="chip good">${d<-0.1?nf1.format(-d)+' onder':'op schema'}</span>`:`<span class="chip warn">${nf1.format(d)} boven</span>`}
-  const t2=`<div class="tile"><span class="tile-l">Richtlijn eind week ${aw}</span><span class="tile-v">${nf1.format(PLAN[aw])}<small>kg</small></span><span class="tile-s">${chip||'Doel '+nf1.format(PLAN[10])+' kg'}</span></div>`;
+  if(avg!=null){
+    const loss=settings.goalKg<settings.startKg,d=avg-planAt(weekMid(aw)),good=loss?d<=0.1:d>=-0.1,mag=Math.abs(d);
+    chip=good?`<span class="chip good">${mag>0.1?nf1.format(mag)+(loss?' onder':' boven'):'op schema'}</span>`:`<span class="chip warn">${nf1.format(mag)} ${loss?'boven':'onder'}</span>`;
+  }
+  const t2=`<div class="tile"><span class="tile-l">Richtlijn eind week ${aw}</span><span class="tile-v">${nf1.format(planEnd(aw))}<small>kg</small></span><span class="tile-s">${chip||'Doel '+nf1.format(settings.goalKg)+' kg'}</span></div>`;
   const cnt=ss.filter(s=>weekOf(s.date)===cw).length;
   const t3=`<div class="tile"><span class="tile-l">Trainingen week ${cw}</span><span class="tile-v">${cnt}<small>/ 3</small></span><span class="tile-s">${ss.length} in totaal</span></div>`;
   $('#o-tiles').innerHTML=t1+t2+t3;
 }
 function chartSVG(ws,ss){
+  const lg=$('#lg-goal');if(lg)lg.textContent=hasPlan()?'doel '+nf1.format(settings.goalKg)+' kg':'doel';
+  if(!hasPlan())return '<p class="empty">Stel eerst je plan in. Daarna zie je hier je gewicht naast de lijn die je moet volgen.</p>';
+  const DAYS=totalDays(),NW=nWeeks(),S0=settings.startKg,G=settings.goalKg;
   const W=360,L=30,Rm=10,T=12,PH=150,XB=T+PH,H=XB+40;
   const x=d=>L+(Math.max(0,Math.min(DAYS,d))/DAYS)*(W-L-Rm);
-  const vals=PLAN.concat(ws.map(w=>w.kg));
-  let lo=Math.floor(Math.min(82,...vals)-0.3),hi=Math.ceil(Math.max(91,...vals)+0.3);if((hi-lo)%2)hi++;
-  const y=v=>T+(hi-v)/(hi-lo)*PH;
-  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gewicht per week naast de richtlijn uit je plan, met je trainingsdagen">`;
-  for(let n=1;n<=10;n++){const x0=x((n-1)*7),x1=x(n*7);if(n%2===0)s+=`<rect class="band" x="${x0}" y="${T}" width="${x1-x0}" height="${PH}"/>`;s+=`<text class="tick" x="${(x0+x1)/2}" y="${XB+14}" text-anchor="middle">${n}</text>`}
-  for(let v=lo;v<=hi;v+=2){s+=`<line class="grid" x1="${L}" x2="${W-Rm}" y1="${y(v)}" y2="${y(v)}"/><text class="tick" x="${L-5}" y="${y(v)+3.5}" text-anchor="end">${v}</text>`}
-  s+=`<line class="goal" x1="${L}" x2="${W-Rm}" y1="${y(82.5)}" y2="${y(82.5)}"/><text class="goal-t" x="${L+4}" y="${y(82.5)-4}">doel 82,5</text>`;
-  s+=`<polyline class="plan" points="${PLAN.map((v,i)=>x(i*7)+','+y(v)).join(' ')}"/>`;
-  for(const w of ws){const d=dayIndex(w.date);if(d<0||d>DAYS)continue;s+=`<circle class="day" cx="${x(d+0.5)}" cy="${y(w.kg)}" r="3"><title>${esc(fmtDate(w.date))}: ${nf1.format(w.kg)} kg</title></circle>`}
-  const pts=[];for(let n=1;n<=10;n++){const a=weekAvg(ws,n);if(a!=null)pts.push({x:x((n-1)*7+3.5),y:y(a),v:a,n})}
+  const inR=ws.filter(w=>{const d=dayIndex(w.date);return d>=0&&d<DAYS});
+  const vals=[S0,G].concat(inR.map(w=>w.kg)),mn=Math.min(...vals),mx=Math.max(...vals),sp=mx-mn;
+  const ts=sp<=10?2:sp<=25?5:10,lo=Math.floor((mn-0.5)/ts)*ts,hi=Math.ceil((mx+0.5)/ts)*ts;
+  const y=v=>T+(hi-v)/(hi-lo)*PH,step=NW<=12?1:Math.ceil(NW/10);
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gewicht per week naast de lijn van je plan, met je trainingsdagen">`;
+  for(let n=1;n<=NW;n++){const x0=x((n-1)*7),x1=x(Math.min(n*7,DAYS));if(n%2===0)s+=`<rect class="band" x="${x0}" y="${T}" width="${x1-x0}" height="${PH}"/>`;if(n===1||n%step===0)s+=`<text class="tick" x="${(x0+x1)/2}" y="${XB+14}" text-anchor="middle">${n}</text>`}
+  for(let v=lo;v<=hi;v+=ts){s+=`<line class="grid" x1="${L}" x2="${W-Rm}" y1="${y(v)}" y2="${y(v)}"/><text class="tick" x="${L-5}" y="${y(v)+3.5}" text-anchor="end">${v}</text>`}
+  s+=`<line class="goal" x1="${L}" x2="${W-Rm}" y1="${y(G)}" y2="${y(G)}"/><text class="goal-t" x="${L+4}" y="${G<S0?y(G)-4:y(G)+12}">doel ${nf1.format(G)}</text>`;
+  s+=`<line class="plan" x1="${x(0)}" y1="${y(S0)}" x2="${x(DAYS)}" y2="${y(G)}"/>`;
+  for(const w of inR){const d=dayIndex(w.date);s+=`<circle class="day" cx="${x(d+0.5)}" cy="${y(w.kg)}" r="3"><title>${esc(fmtDate(w.date))}: ${nf1.format(w.kg)} kg</title></circle>`}
+  const pts=[];for(let n=1;n<=NW;n++){const a=weekAvg(ws,n);if(a!=null)pts.push({x:x(weekMid(n)),y:y(a),v:a,n})}
   if(pts.length>1)s+=`<polyline class="avg" points="${pts.map(p=>p.x+','+p.y).join(' ')}"/>`;
   pts.forEach((p,i)=>{const lastP=i===pts.length-1;s+=`<circle class="avgdot" cx="${p.x}" cy="${p.y}" r="${lastP?5:3.5}"><title>Week ${p.n}: gemiddeld ${nf1.format(p.v)} kg</title></circle>`;if(lastP)s+=`<text class="avg-t" x="${Math.min(p.x+8,W-Rm-26)}" y="${p.y-9}">${nf1.format(p.v)}</text>`});
-  for(const se of ss){const d=dayIndex(se.date);if(d<0||d>DAYS)continue;s+=`<rect class="tr" x="${x(d+0.5)-1.5}" y="${XB+22}" width="3" height="11" rx="1"><title>Training ${esc(fmtDate(se.date))}</title></rect>`}
+  for(const se of ss){const d=dayIndex(se.date);if(d<0||d>=DAYS)continue;s+=`<rect class="tr" x="${x(d+0.5)-1.5}" y="${XB+22}" width="3" height="11" rx="1"><title>Training ${esc(fmtDate(se.date))}</title></rect>`}
   return s+'</svg>';
 }
 function spark(vals){
@@ -822,8 +875,9 @@ function progressSummary(ss){
 }
 function exportText(ws,ss){
   const L=[];
-  L.push('Logboek 82,5 – export '+new Date().toLocaleString('nl-NL',{dateStyle:'medium',timeStyle:'short'}));
-  L.push('Plan: start 90,2 kg op 9 nov 2026 (avondmeting), doel 82,5 kg op 17 jan 2027. Nu: '+weekLabel(weekOf(todayStr())).toLowerCase()+' van 10.');
+  L.push('Logboek – export '+new Date().toLocaleString('nl-NL',{dateStyle:'medium',timeStyle:'short'}));
+  if(hasPlan())L.push('Plan: van '+nf1.format(settings.startKg)+' kg op '+fmtLong(settings.startDate)+' naar '+nf1.format(settings.goalKg)+' kg op '+fmtLong(settings.endDate)+' ('+nWeeks()+' weken, rechte lijn). Nu: '+weekLabel(weekOf(todayStr())).toLowerCase()+' van '+nWeeks()+'.');
+  else L.push('Plan: nog niet ingesteld.');
   L.push('Training: 3x per week full-body. T/m week 3 2 sets van 12; vanaf week 4 3 sets van 12 met de laatste set maximaal.');
   L.push('');
   L.push('GEWICHT');
@@ -832,9 +886,9 @@ function exportText(ws,ss){
   L.push('');
   L.push('PER WEEK');
   const rows=[];
-  for(let n=1;n<=10;n++){
+  for(let n=1;n<=(hasPlan()?nWeeks():0);n++){
     const a=weekAvg(ws,n),m=ws.filter(w=>weekOf(w.date)===n).length,t=ss.filter(x=>weekOf(x.date)===n).length;
-    if(m||t)rows.push([n,a==null?'':nf1.format(a),nf1.format(PLAN[n]),m,t].join(';'));
+    if(m||t)rows.push([n,a==null?'':nf1.format(a),nf1.format(planEnd(n)),m,t].join(';'));
   }
   if(rows.length){L.push('week;gemiddeld_gewicht_kg;richtlijn_eind_week_kg;metingen;trainingen');L.push(...rows)}else L.push('Nog geen gegevens.');
   L.push('');
@@ -854,8 +908,9 @@ function exportText(ws,ss){
 }
 function exportJSON(ws,ss){
   return JSON.stringify({
-    app:'Logboek 82,5',format:1,exportedAt:new Date().toISOString(),
-    plan:{startDate:START,startKg:START_KG,startMeasurement:'avond',goalKg:PLAN[10],endDate:'2027-01-17',targetEndOfWeekKg:PLAN},
+    app:'Logboek',format:2,exportedAt:new Date().toISOString(),
+    settings:hasPlan()?{startDate:settings.startDate,endDate:settings.endDate,startKg:settings.startKg,goalKg:settings.goalKg}:null,
+    plan:hasPlan()?{startDate:settings.startDate,endDate:settings.endDate,startKg:settings.startKg,goalKg:settings.goalKg,weeks:nWeeks(),targetEndOfWeekKg:Array.from({length:nWeeks()+1},(_,n)=>Math.round(planEnd(n)*10)/10)}:null,
     weights:ws.map(w=>({date:w.date,kg:w.kg,waist:typeof w.waist==='number'?w.waist:null,moment:w.moment||'ochtend'})),
     sessions:ss.map(x=>({id:x.id,date:x.date,week:weekOf(x.date),savedAt:x.savedAt||null,note:x.note||'',entries:(x.entries||[]).map(en=>({id:en.id,name:EX[en.id]?EX[en.id].name:en.id,sets:en.sets}))}))
   },null,2);
@@ -888,16 +943,18 @@ function importBackup(file){
   const rd=new FileReader();
   rd.onload=()=>{
     let d;try{d=JSON.parse(rd.result)}catch(e){toast('Dit bestand is geen geldige back-up.');return}
-    if(!d||d.app!=='Logboek 82,5'||!Array.isArray(d.weights)||!Array.isArray(d.sessions)){toast('Dit is geen back-up van Logboek 82,5.');return}
-    let nw=0,ns=0;
+    if(!d||typeof d.app!=='string'||d.app.indexOf('Logboek')!==0||!Array.isArray(d.weights)||!Array.isArray(d.sessions)){toast('Dit is geen back-up van het Logboek.');return}
+    let nw=0,ns=0,planSet=false;
+    const cand=d.settings||d.plan;
+    if(cand&&(d.settings||!hasPlan())){const c={startDate:cand.startDate,endDate:cand.endDate,startKg:cand.startKg,goalKg:cand.goalKg};if(validPlan(c)){settings=c;lsSet(LS_SET,settings);planSet=true}}
     for(const w of d.weights){if(w&&typeof w.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(w.date)&&typeof w.kg==='number'){store.weights[w.date]={date:w.date,kg:w.kg,waist:typeof w.waist==='number'?w.waist:null,moment:w.moment==='avond'?'avond':'ochtend'};nw++}}
     for(const x of d.sessions){
       if(!x||typeof x.id!=='string'||!/^[A-Za-z0-9_.~:@+-]{1,100}$/.test(x.id)||typeof x.date!=='string')continue;
       const entries=(x.entries||[]).filter(en=>en&&EX[en.id]&&Array.isArray(en.sets)).map(en=>({id:en.id,sets:en.sets.filter(st=>st&&typeof st.reps==='number').map(st=>({kg:typeof st.kg==='number'?st.kg:0,reps:st.reps}))})).filter(en=>en.sets.length);
       store.sessions[x.id]={date:x.date,week:weekOf(x.date),savedAt:x.savedAt||null,entries,note:typeof x.note==='string'?x.note.slice(0,1000):''};ns++;
     }
-    persist();markBackup();renderWeights();renderOverview();renderPrev();
-    toast(nw+' metingen en '+ns+' trainingen teruggezet');
+    persist();markBackup();afterPlanChange();
+    toast(nw+' metingen en '+ns+' trainingen teruggezet'+(planSet?', plus je plan':''));
   };
   rd.onerror=()=>toast('Het bestand kon niet worden gelezen.');
   rd.readAsText(file);
@@ -937,13 +994,65 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',reco
 new MutationObserver(recolor).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 window.addEventListener('resize',()=>{if(dlg.open&&curEx&&reduce.matches)paint(1,true)});
 
+/* ---------- Plan tab ---------- */
+function readPlanForm(){return {startDate:$('#p-start').value,endDate:$('#p-end').value,startKg:num($('#p-kg0').value),goalKg:num($('#p-kg1').value)}}
+function planProblem(p){
+  if(!DATE_RE.test(p.startDate)||!DATE_RE.test(p.endDate))return 'Kies een start- en een einddatum.';
+  const T=Math.round((parseD(p.endDate)-parseD(p.startDate))/864e5)+1;
+  if(T<14)return 'Kies een periode van minstens 2 weken.';
+  if(T>728)return 'Kies een periode van hoogstens 104 weken.';
+  if(isNaN(p.startKg)||p.startKg<30||p.startKg>300)return 'Vul je startgewicht in kilo in.';
+  if(isNaN(p.goalKg)||p.goalKg<30||p.goalKg>300)return 'Vul je doelgewicht in kilo in.';
+  if(Math.abs(p.goalKg-p.startKg)<0.1)return 'Je doelgewicht is gelijk aan je startgewicht.';
+  return null;
+}
+function updateCalc(){
+  const p=readPlanForm(),pr=planProblem(p),el=$('#p-calc');
+  if(pr){el.textContent=pr;return}
+  const T=Math.round((parseD(p.endDate)-parseD(p.startDate))/864e5)+1,diff=p.goalKg-p.startKg,perW=Math.abs(diff)/(T/7);
+  const warn=diff<0&&perW>p.startKg*0.01?' <span class="chip warn">snel: meer dan 1% van je gewicht per week</span>':'';
+  el.innerHTML=`${Math.ceil(T/7)} weken · ${nf1.format(Math.abs(diff))} kg ${diff<0?'eraf':'erbij'} · ${nf2.format(Math.round(perW*100)/100)} kg per week${warn}`;
+}
+function renderPlanTable(){
+  const box=$('#p-table');
+  if(!hasPlan()){box.innerHTML='<p class="empty">Na het opslaan zie je hier per week het gewicht dat je ongeveer moet halen.</p>';return}
+  const T=totalDays(),cw=weekOf(todayStr());let h='';
+  for(let n=1;n<=nWeeks();n++){h+=`<div class="w-row pl-row"><div class="w-date">Week ${n}${n===cw?' <span class="chip good">deze week</span>':''}<small>t/m ${esc(fmtDate(addDays(settings.startDate,Math.min(n*7,T)-1)))}</small></div><span class="w-kg">${nf1.format(planEnd(n))}</span></div>`}
+  box.innerHTML=h;
+}
+function renderPlan(){
+  const f=settings||{};
+  $('#p-start').value=f.startDate||todayStr();
+  $('#p-end').value=f.endDate||addDays(todayStr(),69);
+  $('#p-kg0').value=typeof f.startKg==='number'?fmtKg(f.startKg):'';
+  $('#p-kg1').value=typeof f.goalKg==='number'?fmtKg(f.goalKg):'';
+  updateCalc();renderPlanTable();
+}
+function renderHeader(){
+  const el=$('#hdr-sub');if(!hasPlan()){el.textContent='Stel je plan in';return}
+  const w=weekOf(todayStr()),N=nWeeks();
+  el.textContent=(w>=1&&w<=N?'Week '+w+' van '+N:weekLabel(w))+' · doel '+nf1.format(settings.goalKg)+' kg';
+}
+function afterPlanChange(){
+  if(!draft.dirty&&!draft.sessionId)draft=newDraft(draft.date);
+  saveDraft();renderHeader();renderTraining();renderWeights();renderOverview();renderPlanTable();updateCalc();
+}
+function savePlan(ev){
+  ev.preventDefault();
+  const p=readPlanForm(),pr=planProblem(p);
+  if(pr){toast(pr);return}
+  settings={startDate:p.startDate,endDate:p.endDate,startKg:Math.round(p.startKg*10)/10,goalKg:Math.round(p.goalKg*10)/10};
+  lsSet(LS_SET,settings);afterPlanChange();toast('Plan opgeslagen');
+}
+
 /* ---------- Tabs ---------- */
-const TABS=['training','gewicht','overzicht'];
+const TABS=['training','gewicht','overzicht','plan'];
 function showTab(){
-  const h=(location.hash||'').slice(1),tab=TABS.indexOf(h)>=0?h:'training';
+  const h=(location.hash||'').slice(1),tab=TABS.indexOf(h)>=0?h:(hasPlan()?'training':'plan');
   TABS.forEach(t=>{$('#v-'+t).hidden=t!==tab});
   document.querySelectorAll('.tab').forEach(b=>{if(b.dataset.tab===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   if(tab==='overzicht')renderOverview();
+  if(tab==='plan')renderPlan();
 }
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{if(location.hash!=='#'+b.dataset.tab)location.hash='#'+b.dataset.tab;else showTab();window.scrollTo({top:0})}));
 window.addEventListener('hashchange',()=>{showTab();window.scrollTo({top:0})});
@@ -965,6 +1074,8 @@ $('#x-json').addEventListener('click',()=>saveExport('json'));
 $('#x-import').addEventListener('click',()=>$('#x-file').click());
 $('#x-file').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)importBackup(f);e.target.value=''});
 $('#w-form').addEventListener('submit',saveWeight);
+$('#p-form').addEventListener('submit',savePlan);
+['#p-start','#p-end','#p-kg0','#p-kg1'].forEach(sel=>$(sel).addEventListener('input',updateCalc));
 $('#w-list').addEventListener('click',e=>{const b=e.target.closest('[data-delw]');if(b)armConfirm(b,'Zeker?',()=>{writeDoc('weights/'+b.dataset.delw,null);toast('Meting verwijderd')})});
 $('#o-history').addEventListener('click',e=>{
   const h=e.target.closest('.hist-head');
@@ -973,7 +1084,7 @@ $('#o-history').addEventListener('click',e=>{
   const del=e.target.closest('[data-dels]');
   if(del)armConfirm(del,'Zeker? Tik nogmaals',()=>{const id=del.dataset.dels;writeDoc('sessions/'+id,null);if(draft.sessionId===id){draft.sessionId=null;draft.dirty=true;saveDraft();renderSaveStatus()}toast('Training verwijderd')});
 });
-$('#hdr-sub').textContent=(()=>{const w=weekOf(todayStr());return w>=1&&w<=10?`Week ${w} van 10`:'Plan 9 nov – 17 jan'})();
+renderHeader();
 
 renderTraining();renderWeights();showTab();setSync();
 

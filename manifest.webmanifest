@@ -1,7 +1,7 @@
 {
-  "name": "Logboek 82,5",
+  "name": "Logboek",
   "short_name": "Logboek",
-  "description": "Trainingslogboek en gewicht naast het 10-wekenplan",
+  "description": "Trainingslogboek en gewicht naast je eigen plan",
   "lang": "nl",
   "start_url": "./",
   "scope": "./",
