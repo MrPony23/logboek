@@ -8,8 +8,8 @@
 <meta name="description" content="Trainingslogboek: sets, herhalingen, gewicht en ochtendgewicht naast het 10-wekenplan.">
 <title>Logboek</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-v3-192.png">
+<link rel="apple-touch-icon" href="icon-v3-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap">
@@ -120,6 +120,18 @@ input.inp[type=date]{height:46px;padding-block:0}
 .btn-sm:active{background:var(--surface-2)}
 .btn-sm.danger{color:var(--pin);border-color:color-mix(in srgb,var(--pin) 40%,var(--line))}
 .btn-sm.armed{background:var(--pin);color:var(--on-accent);border-color:var(--pin)}
+.acts{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:2px 12px}
+.act{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:8px 0;min-height:62px}
+.act+.act{border-top:1px solid var(--line)}
+.act-chk{display:inline-flex;align-items:center;gap:10px;font-size:17px;font-weight:600;cursor:pointer;min-height:44px}
+.act-chk input{width:24px;height:24px;margin:0;accent-color:var(--accent);flex:none}
+.seg{display:inline-grid;grid-template-columns:repeat(3,auto);border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface-2)}
+.seg button{border:0;background:transparent;color:var(--ink-2);font-weight:600;font-size:14.5px;padding:0 12px;min-height:44px;cursor:pointer;font-variant-numeric:tabular-nums}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-checked="true"]{background:var(--accent);color:var(--on-accent)}
+.act-walk{display:inline-flex;align-items:center;gap:8px}
+.act-walk .stp{width:150px}
+.unit{font-size:14px;color:var(--ink-2);font-weight:600}
 .extras{border:1px dashed var(--line);border-radius:var(--radius);padding:4px 12px}
 .extras>summary{cursor:pointer;padding:10px 0;font-weight:600;list-style-position:inside}
 .extras[open]{padding-bottom:12px}
@@ -158,21 +170,19 @@ input.inp[type=date]{height:46px;padding-block:0}
 .chart .grid{stroke:var(--line);stroke-width:1}
 .chart .tick{fill:var(--ink-2);font-size:10px;font-family:var(--body)}
 .chart .plan{stroke:var(--ink-2);stroke-width:1.5;stroke-dasharray:4 4;fill:none}
-.chart .goal{stroke:var(--good);stroke-width:1.2;stroke-dasharray:2 4}
+.chart .goal{stroke:var(--good);stroke-width:1.5}
 .chart .goal-t{fill:var(--good);font-size:10px;font-family:var(--body);font-weight:600}
-.chart .day{fill:var(--accent);fill-opacity:.32}
-.chart .avg{stroke:var(--accent);stroke-width:2.5;fill:none;stroke-linejoin:round}
-.chart .avgdot{fill:var(--accent)}
-.chart .avg-t{fill:var(--ink);font-size:11px;font-weight:600;font-family:var(--body)}
-.chart .tr{fill:var(--ink-2)}
+.chart .wline{stroke:var(--accent);stroke-width:1.75;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.chart .wdot{fill:var(--accent);stroke:var(--surface);stroke-width:1}
+.chart .wdot.sport{fill:var(--good)}
+.chart .last-t{fill:var(--ink);font-size:11px;font-weight:600;font-family:var(--body)}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .lg{display:inline-block;flex:none}
-.lg.avg{width:14px;height:3px;background:var(--accent);border-radius:2px}
-.lg.day{width:7px;height:7px;border-radius:50%;background:var(--accent);opacity:.35}
+.lg.dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.lg.dot.sport{background:var(--good)}
 .lg.plan{width:14px;border-top:2px dashed var(--ink-2)}
-.lg.goal{width:14px;border-top:2px dotted var(--good)}
-.lg.tr{width:3px;height:10px;background:var(--ink-2)}
+.lg.goal{width:14px;border-top:2px solid var(--good)}
 .prog{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:4px 12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
 .prog:last-child{border-bottom:0}
 .prog-n{font-size:15px;font-weight:600;line-height:1.2}
@@ -258,6 +268,27 @@ dialog::backdrop{background:var(--scrim)}
       </label>
       <span class="wk-pill" id="t-week">Week</span>
     </div>
+    <div class="pair">
+      <div class="pair-head">Padel en wandelen</div>
+      <div class="acts">
+        <div class="act">
+          <label class="act-chk" for="a-padel"><input type="checkbox" id="a-padel"><span>Padel</span></label>
+          <div class="seg" id="a-padel-min" role="radiogroup" aria-label="Hoe lang heb je gepadeld?" hidden>
+            <button type="button" role="radio" aria-checked="false" data-min="60">60 min</button>
+            <button type="button" role="radio" aria-checked="false" data-min="90">90 min</button>
+            <button type="button" role="radio" aria-checked="false" data-min="120">120 min</button>
+          </div>
+        </div>
+        <div class="act">
+          <label class="act-chk" for="a-walk"><input type="checkbox" id="a-walk"><span>Wandelen</span></label>
+          <div class="act-walk" id="a-walk-box" hidden>
+            <div class="stp"><button type="button" data-walk="-" aria-label="5 minuten minder">−</button><input id="a-walk-min" inputmode="numeric" autocomplete="off" placeholder="30" aria-label="Minuten gewandeld"><button type="button" data-walk="+" aria-label="5 minuten meer">+</button></div>
+            <span class="unit">min</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pair-head">Krachttraining</div>
     <div class="scheme" id="t-scheme"></div>
     <div id="t-list" class="view"></div>
     <details class="extras" id="t-extras">
@@ -331,11 +362,10 @@ dialog::backdrop{background:var(--scrim)}
       <h2 id="o-chart-title">Gewicht naast je plan</h2>
       <div class="chart-box" id="o-chart"></div>
       <div class="legend">
-        <span><i class="lg avg"></i>weekgemiddelde</span>
-        <span><i class="lg day"></i>dagwaarde</span>
-        <span><i class="lg plan"></i>richtlijn uit je plan</span>
-        <span><i class="lg goal"></i><span id="lg-goal">doel</span></span>
-        <span><i class="lg tr"></i>training</span>
+        <span><i class="lg dot"></i>meting</span>
+        <span><i class="lg dot sport"></i>meting op een sportdag</span>
+        <span><i class="lg plan"></i>doel volgens je plan</span>
+        <span><i class="lg goal"></i><span id="lg-goal">einddoel</span></span>
       </div>
     </div>
     <div class="card">
@@ -623,11 +653,13 @@ function newDraft(date){
     const l=last[id];
     sets[id]=Array.from({length:n},(_,i)=>({kg:l?fmtKg((l.sets[i]||l.sets[l.sets.length-1]).kg):'',reps:''}));
   }
-  return {date,sessionId:null,savedAt:null,dirty:false,sets,note:''};
+  return {date,sessionId:null,savedAt:null,dirty:false,sets,note:'',padel:null,walk:null};
 }
 let draft=lsGet(LS_DRAFT,null);
 if(!draft||!draft.sets){draft=newDraft()}
 for(const id of ALL){if(!draft.sets[id])draft.sets[id]=[{kg:'',reps:''}]}
+if(draft.padel===undefined)draft.padel=null;
+if(draft.walk===undefined)draft.walk=null;
 function saveDraft(){lsSet(LS_DRAFT,draft)}
 
 /* ---------- Writes (on this phone) ---------- */
@@ -681,7 +713,7 @@ function renderTraining(){
   $('#t-list').innerHTML=PAIRS.map((p,i)=>`<div class="pair"><div class="pair-head">Duo ${i+1} · om en om</div>${p.map(id=>card(id,last[id])).join('')}</div>`).join('');
   $('#t-extra-list').innerHTML=`<div class="pair">${EXTRAS.map(id=>card(id,last[id])).join('')}</div>`;
   $('#t-note').value=draft.note||'';
-  renderSaveStatus();
+  renderActs();renderSaveStatus();
 }
 function renderPrev(){
   const last=lastByExercise(draft.date,draft.sessionId),maxOn=!inLearn(weekOf(draft.date));
@@ -695,6 +727,15 @@ function renderSaveStatus(){
   $('#t-save').textContent=draft.sessionId?'Wijzigingen opslaan':'Training opslaan';
 }
 function touch(){draft.dirty=true;saveDraft();renderSaveStatus()}
+const PADEL_MIN=[60,90,120];
+function renderActs(){
+  const pOn=draft.padel!=null,wOn=draft.walk!=null,wi=$('#a-walk-min');
+  $('#a-padel').checked=pOn;$('#a-padel-min').hidden=!pOn;
+  document.querySelectorAll('#a-padel-min [data-min]').forEach(b=>b.setAttribute('aria-checked',String(+b.dataset.min===draft.padel)));
+  $('#a-walk').checked=wOn;$('#a-walk-box').hidden=!wOn;
+  if(document.activeElement!==wi)wi.value=wOn?draft.walk:'';
+}
+function walkMinutes(){const v=parseInt(draft.walk,10);return draft.walk!=null&&v>0?Math.min(v,600):null}
 function onTrainClick(ev){
   const info=ev.target.closest('[data-info]');if(info){openInfo(info.dataset.info);return}
   const cardEl=ev.target.closest('.ex');if(!cardEl)return;const id=cardEl.dataset.ex,ex=EX[id];
@@ -724,12 +765,13 @@ function buildEntries(){
   return entries;
 }
 function saveTraining(){
-  const entries=buildEntries();
-  if(!entries.length){toast('Vul eerst bij minstens één set je herhalingen in.');return}
+  const entries=buildEntries(),padelMin=PADEL_MIN.indexOf(draft.padel)>=0?draft.padel:null,walkMin=walkMinutes();
+  if(draft.walk!=null&&!walkMin){toast('Vul in hoeveel minuten je hebt gewandeld.');$('#a-walk-min').focus();return}
+  if(!entries.length&&!padelMin&&!walkMin){toast('Vul een oefening in, of kies padel of wandelen.');return}
   const now=new Date();
   if(!draft.sessionId){draft.sessionId='s-'+draft.date.replace(/-/g,'')+'-'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0')+String(now.getSeconds()).padStart(2,'0')}
   draft.savedAt=now.toISOString();
-  const doc={date:draft.date,week:weekOf(draft.date),savedAt:draft.savedAt,entries,note:(draft.note||'').slice(0,1000)};
+  const doc={date:draft.date,week:weekOf(draft.date),savedAt:draft.savedAt,entries,padelMin,walkMin,note:(draft.note||'').slice(0,1000)};
   draft.dirty=false;saveDraft();
   writeDoc('sessions/'+draft.sessionId,doc);
   renderSaveStatus();toast('Training opgeslagen');
@@ -763,6 +805,17 @@ function saveWeight(ev){
   toast(exists?'Meting bijgewerkt':'Gewicht opgeslagen');
 }
 
+/* ---------- Activity helpers ---------- */
+function isStrength(s){return (s.entries||[]).length>0}
+function sportDates(ss){return new Set(ss.map(s=>s.date))}
+function actLine(s){
+  const parts=[];
+  if(isStrength(s)){const vol=(s.entries||[]).reduce((t,en)=>t+en.sets.reduce((u,x)=>u+(x.kg||0)*(x.reps||0),0),0);{const n=(s.entries||[]).length;parts.push(n+(n===1?' oefening':' oefeningen')+' · '+nf0.format(vol)+' kg verzet')}}
+  if(s.padelMin)parts.push('padel '+s.padelMin+' min');
+  if(s.walkMin)parts.push('wandelen '+s.walkMin+' min');
+  return parts.join(' · ');
+}
+
 /* ---------- Overview ---------- */
 function weekAvg(ws,w){const arr=ws.filter(x=>weekOf(x.date)===w);return arr.length?arr.reduce((s,x)=>s+x.kg,0)/arr.length:null}
 function renderTiles(ws,ss){
@@ -779,30 +832,33 @@ function renderTiles(ws,ss){
     chip=good?`<span class="chip good">${mag>0.1?nf1.format(mag)+(loss?' onder':' boven'):'op schema'}</span>`:`<span class="chip warn">${nf1.format(mag)} ${loss?'boven':'onder'}</span>`;
   }
   const t2=`<div class="tile"><span class="tile-l">Richtlijn eind week ${aw}</span><span class="tile-v">${nf1.format(planEnd(aw))}<small>kg</small></span><span class="tile-s">${chip||'Doel '+nf1.format(settings.goalKg)+' kg'}</span></div>`;
-  const cnt=ss.filter(s=>weekOf(s.date)===cw).length;
-  const t3=`<div class="tile"><span class="tile-l">Trainingen week ${cw}</span><span class="tile-v">${cnt}<small>/ 3</small></span><span class="tile-s">${ss.length} in totaal</span></div>`;
+  const wk=ss.filter(s=>weekOf(s.date)===cw),cnt=wk.filter(isStrength).length,pc=wk.filter(s=>s.padelMin).length,wm=wk.reduce((t,s)=>t+(s.walkMin||0),0);
+  const extra=[pc?pc+'× padel':'',wm?wm+' min wandelen':''].filter(Boolean).join(' · ');
+  const t3=`<div class="tile"><span class="tile-l">Krachttraining week ${cw}</span><span class="tile-v">${cnt}<small>/ 3</small></span><span class="tile-s">${extra||ss.filter(isStrength).length+' in totaal'}</span></div>`;
   $('#o-tiles').innerHTML=t1+t2+t3;
 }
 function chartSVG(ws,ss){
-  const lg=$('#lg-goal');if(lg)lg.textContent=hasPlan()?'doel '+nf1.format(settings.goalKg)+' kg':'doel';
+  const lg=$('#lg-goal');if(lg)lg.textContent=hasPlan()?'einddoel '+nf1.format(settings.goalKg)+' kg':'einddoel';
   if(!hasPlan())return '<p class="empty">Stel eerst je plan in. Daarna zie je hier je gewicht naast de lijn die je moet volgen.</p>';
-  const DAYS=totalDays(),NW=nWeeks(),S0=settings.startKg,G=settings.goalKg;
-  const W=360,L=30,Rm=10,T=12,PH=150,XB=T+PH,H=XB+40;
+  const DAYS=totalDays(),NW=nWeeks(),S0=settings.startKg,G=settings.goalKg,sport=sportDates(ss);
+  const W=360,L=30,Rm=12,T=14,PH=160,XB=T+PH,H=XB+22;
   const x=d=>L+(Math.max(0,Math.min(DAYS,d))/DAYS)*(W-L-Rm);
   const inR=ws.filter(w=>{const d=dayIndex(w.date);return d>=0&&d<DAYS});
   const vals=[S0,G].concat(inR.map(w=>w.kg)),mn=Math.min(...vals),mx=Math.max(...vals),sp=mx-mn;
   const ts=sp<=10?2:sp<=25?5:10,lo=Math.floor((mn-0.5)/ts)*ts,hi=Math.ceil((mx+0.5)/ts)*ts;
   const y=v=>T+(hi-v)/(hi-lo)*PH,step=NW<=12?1:Math.ceil(NW/10);
-  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gewicht per week naast de lijn van je plan, met je trainingsdagen">`;
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gewicht per dag naast de lijn van je plan; groene punten zijn dagen waarop je hebt gesport">`;
   for(let n=1;n<=NW;n++){const x0=x((n-1)*7),x1=x(Math.min(n*7,DAYS));if(n%2===0)s+=`<rect class="band" x="${x0}" y="${T}" width="${x1-x0}" height="${PH}"/>`;if(n===1||n%step===0)s+=`<text class="tick" x="${(x0+x1)/2}" y="${XB+14}" text-anchor="middle">${n}</text>`}
   for(let v=lo;v<=hi;v+=ts){s+=`<line class="grid" x1="${L}" x2="${W-Rm}" y1="${y(v)}" y2="${y(v)}"/><text class="tick" x="${L-5}" y="${y(v)+3.5}" text-anchor="end">${v}</text>`}
-  s+=`<line class="goal" x1="${L}" x2="${W-Rm}" y1="${y(G)}" y2="${y(G)}"/><text class="goal-t" x="${L+4}" y="${G<S0?y(G)-4:y(G)+12}">doel ${nf1.format(G)}</text>`;
+  s+=`<line class="goal" x1="${L}" x2="${W-Rm}" y1="${y(G)}" y2="${y(G)}"/><text class="goal-t" x="${L+4}" y="${G<S0?y(G)-5:y(G)+13}">einddoel ${nf1.format(G)}</text>`;
   s+=`<line class="plan" x1="${x(0)}" y1="${y(S0)}" x2="${x(DAYS)}" y2="${y(G)}"/>`;
-  for(const w of inR){const d=dayIndex(w.date);s+=`<circle class="day" cx="${x(d+0.5)}" cy="${y(w.kg)}" r="3"><title>${esc(fmtDate(w.date))}: ${nf1.format(w.kg)} kg</title></circle>`}
-  const pts=[];for(let n=1;n<=NW;n++){const a=weekAvg(ws,n);if(a!=null)pts.push({x:x(weekMid(n)),y:y(a),v:a,n})}
-  if(pts.length>1)s+=`<polyline class="avg" points="${pts.map(p=>p.x+','+p.y).join(' ')}"/>`;
-  pts.forEach((p,i)=>{const lastP=i===pts.length-1;s+=`<circle class="avgdot" cx="${p.x}" cy="${p.y}" r="${lastP?5:3.5}"><title>Week ${p.n}: gemiddeld ${nf1.format(p.v)} kg</title></circle>`;if(lastP)s+=`<text class="avg-t" x="${Math.min(p.x+8,W-Rm-26)}" y="${p.y-9}">${nf1.format(p.v)}</text>`});
-  for(const se of ss){const d=dayIndex(se.date);if(d<0||d>=DAYS)continue;s+=`<rect class="tr" x="${x(d+0.5)-1.5}" y="${XB+22}" width="3" height="11" rx="1"><title>Training ${esc(fmtDate(se.date))}</title></rect>`}
+  const pts=inR.map(w=>({w,cx:x(dayIndex(w.date)+0.5),cy:y(w.kg),sp:sport.has(w.date)}));
+  if(pts.length>1)s+=`<polyline class="wline" points="${pts.map(p=>p.cx+','+p.cy).join(' ')}"/>`;
+  pts.forEach((p,i)=>{
+    const lastP=i===pts.length-1;
+    s+=`<circle class="wdot${p.sp?' sport':''}" cx="${p.cx}" cy="${p.cy}" r="${lastP?4.5:2.8}"><title>${esc(fmtDate(p.w.date))}: ${nf1.format(p.w.kg)} kg${p.sp?' · gesport':''}</title></circle>`;
+    if(lastP){const above=p.cy-10>T+8;s+=`<text class="last-t" x="${Math.min(p.cx+8,W-Rm-24)}" y="${above?p.cy-9:p.cy+17}">${nf1.format(p.w.kg)}</text>`}
+  });
   return s+'</svg>';
 }
 function spark(vals){
@@ -829,15 +885,16 @@ function renderProgress(ss){
 }
 function renderHistory(ss){
   const box=$('#o-history');
-  if(!ss.length){box.innerHTML='<p class="empty">Nog geen trainingen opgeslagen. Vul op het tabblad Training je sets in en tik op Training opslaan.</p>';return}
+  if(!ss.length){box.innerHTML='<p class="empty">Nog geen trainingen opgeslagen. Vul op het tabblad Training je sets in, of kies padel of wandelen, en tik op Training opslaan.</p>';return}
   const open=new Set([...box.querySelectorAll('.hist-head[aria-expanded="true"]')].map(b=>b.dataset.id));
   box.innerHTML=ss.slice().reverse().map(s=>{
-    const vol=(s.entries||[]).reduce((t,en)=>t+en.sets.reduce((u,x)=>u+(x.kg||0)*(x.reps||0),0),0);
     const isOpen=open.has(s.id),pending=!!pend['sessions/'+s.id];
     return `<div class="hist"><button class="hist-head" type="button" data-id="${esc(s.id)}" aria-expanded="${isOpen}">
-      <span><b>${esc(fmtDate(s.date))}</b><small>${esc(weekLabel(weekOf(s.date)))} · ${(s.entries||[]).length} oefeningen · ${nf0.format(vol)} kg verzet${pending?' · wacht op opslaan':''}</small></span>
+      <span><b>${esc(fmtDate(s.date))}</b><small>${esc(weekLabel(weekOf(s.date)))} · ${esc(actLine(s))}${pending?' · wacht op opslaan':''}</small></span>
       <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
       <div class="hist-body"${isOpen?'':' hidden'}>
+        ${s.padelMin?`<div class="hist-ex">Padel<span>${s.padelMin} minuten</span></div>`:''}
+        ${s.walkMin?`<div class="hist-ex">Wandelen<span>${s.walkMin} minuten</span></div>`:''}
         ${(s.entries||[]).map(en=>`<div class="hist-ex">${esc(EX[en.id]?EX[en.id].name:en.id)}<span>${en.sets.map(x=>esc(fmtKg(x.kg))+' kg × '+x.reps).join(' · ')}</span></div>`).join('')}
         ${s.note?`<p class="hist-note">${esc(s.note)}</p>`:''}
         <div class="hist-act"><button class="btn-sm" type="button" data-edit="${esc(s.id)}">Bewerken</button><button class="btn-sm danger" type="button" data-dels="${esc(s.id)}">Verwijderen</button></div>
@@ -854,7 +911,7 @@ function editSession(id){
   const s=viewSessions().find(x=>x.id===id);if(!s)return;
   const n=defaultSets(weekOf(s.date)),sets={};
   for(const ex of ALL){const en=(s.entries||[]).find(e=>e.id===ex);sets[ex]=en?en.sets.map(x=>({kg:fmtKg(x.kg),reps:String(x.reps)})):Array.from({length:n},()=>({kg:'',reps:''}))}
-  draft={date:s.date,sessionId:s.id,savedAt:s.savedAt||null,dirty:false,sets,note:s.note||''};
+  draft={date:s.date,sessionId:s.id,savedAt:s.savedAt||null,dirty:false,sets,note:s.note||'',padel:s.padelMin||null,walk:s.walkMin?String(s.walkMin):null};
   saveDraft();renderTraining();location.hash='#training';toast('Training geladen om te bewerken');
 }
 
@@ -878,24 +935,26 @@ function exportText(ws,ss){
   L.push('Logboek – export '+new Date().toLocaleString('nl-NL',{dateStyle:'medium',timeStyle:'short'}));
   if(hasPlan())L.push('Plan: van '+nf1.format(settings.startKg)+' kg op '+fmtLong(settings.startDate)+' naar '+nf1.format(settings.goalKg)+' kg op '+fmtLong(settings.endDate)+' ('+nWeeks()+' weken, rechte lijn). Nu: '+weekLabel(weekOf(todayStr())).toLowerCase()+' van '+nWeeks()+'.');
   else L.push('Plan: nog niet ingesteld.');
-  L.push('Training: 3x per week full-body. T/m week 3 2 sets van 12; vanaf week 4 3 sets van 12 met de laatste set maximaal.');
+  L.push('Training: 3x per week full-body krachttraining. T/m week 3 2 sets van 12; vanaf week 4 3 sets van 12 met de laatste set maximaal. Padel en wandelen staan in minuten.');
   L.push('');
   L.push('GEWICHT');
   if(!ws.length)L.push('Nog geen metingen.');
-  else{L.push('datum;week;gewicht_kg;taille_cm;moment');ws.forEach(w=>L.push([w.date,weekOf(w.date),nf1.format(w.kg),typeof w.waist==='number'?nf1.format(w.waist):'',w.moment||'ochtend'].join(';')))}
+  else{const sd=sportDates(ss);L.push('datum;week;gewicht_kg;taille_cm;moment;gesport');ws.forEach(w=>L.push([w.date,weekOf(w.date),nf1.format(w.kg),typeof w.waist==='number'?nf1.format(w.waist):'',w.moment||'ochtend',sd.has(w.date)?'ja':'nee'].join(';')))}
   L.push('');
   L.push('PER WEEK');
   const rows=[];
   for(let n=1;n<=(hasPlan()?nWeeks():0);n++){
-    const a=weekAvg(ws,n),m=ws.filter(w=>weekOf(w.date)===n).length,t=ss.filter(x=>weekOf(x.date)===n).length;
-    if(m||t)rows.push([n,a==null?'':nf1.format(a),nf1.format(planEnd(n)),m,t].join(';'));
+    const a=weekAvg(ws,n),m=ws.filter(w=>weekOf(w.date)===n).length,wk=ss.filter(x=>weekOf(x.date)===n);
+    if(m||wk.length)rows.push([n,a==null?'':nf1.format(a),nf1.format(planEnd(n)),m,wk.filter(isStrength).length,wk.reduce((t,x)=>t+(x.padelMin||0),0),wk.reduce((t,x)=>t+(x.walkMin||0),0)].join(';'));
   }
-  if(rows.length){L.push('week;gemiddeld_gewicht_kg;richtlijn_eind_week_kg;metingen;trainingen');L.push(...rows)}else L.push('Nog geen gegevens.');
+  if(rows.length){L.push('week;gemiddeld_gewicht_kg;richtlijn_eind_week_kg;metingen;krachttrainingen;padel_min;wandelen_min');L.push(...rows)}else L.push('Nog geen gegevens.');
   L.push('');
   L.push('TRAININGEN');
   if(!ss.length)L.push('Nog geen trainingen.');
   ss.forEach(x=>{
     L.push(x.date+' ('+weekLabel(weekOf(x.date)).toLowerCase()+')');
+    if(x.padelMin)L.push('- Padel: '+x.padelMin+' min');
+    if(x.walkMin)L.push('- Wandelen: '+x.walkMin+' min');
     (x.entries||[]).forEach(en=>L.push('- '+(EX[en.id]?EX[en.id].name:en.id)+': '+en.sets.map(st=>fmtSet(en.id,st)).join(', ')));
     if(x.note)L.push('  Notitie: '+String(x.note).replace(/\s+/g,' '));
   });
@@ -908,11 +967,11 @@ function exportText(ws,ss){
 }
 function exportJSON(ws,ss){
   return JSON.stringify({
-    app:'Logboek',format:2,exportedAt:new Date().toISOString(),
+    app:'Logboek',format:3,exportedAt:new Date().toISOString(),
     settings:hasPlan()?{startDate:settings.startDate,endDate:settings.endDate,startKg:settings.startKg,goalKg:settings.goalKg}:null,
     plan:hasPlan()?{startDate:settings.startDate,endDate:settings.endDate,startKg:settings.startKg,goalKg:settings.goalKg,weeks:nWeeks(),targetEndOfWeekKg:Array.from({length:nWeeks()+1},(_,n)=>Math.round(planEnd(n)*10)/10)}:null,
     weights:ws.map(w=>({date:w.date,kg:w.kg,waist:typeof w.waist==='number'?w.waist:null,moment:w.moment||'ochtend'})),
-    sessions:ss.map(x=>({id:x.id,date:x.date,week:weekOf(x.date),savedAt:x.savedAt||null,note:x.note||'',entries:(x.entries||[]).map(en=>({id:en.id,name:EX[en.id]?EX[en.id].name:en.id,sets:en.sets}))}))
+    sessions:ss.map(x=>({id:x.id,date:x.date,week:weekOf(x.date),savedAt:x.savedAt||null,note:x.note||'',padelMin:x.padelMin||null,walkMin:x.walkMin||null,entries:(x.entries||[]).map(en=>({id:en.id,name:EX[en.id]?EX[en.id].name:en.id,sets:en.sets}))}))
   },null,2);
 }
 function renderExport(ws,ss){
@@ -930,7 +989,7 @@ function downloadBlob(blob,name,isJson){
 }
 function saveExport(kind){
   const ws=viewWeights(),ss=viewSessions(),stamp=todayStr(),isJson=kind==='json';
-  const name=isJson?'logboek-82-5-backup-'+stamp+'.json':'logboek-82-5-'+stamp+'.txt';
+  const name=isJson?'logboek-backup-'+stamp+'.json':'logboek-'+stamp+'.txt';
   const blob=new Blob([isJson?exportJSON(ws,ss):exportText(ws,ss)],{type:isJson?'application/json':'text/plain'});
   let file=null;try{file=new File([blob],name,{type:blob.type})}catch(e){file=null}
   if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
@@ -951,7 +1010,9 @@ function importBackup(file){
     for(const x of d.sessions){
       if(!x||typeof x.id!=='string'||!/^[A-Za-z0-9_.~:@+-]{1,100}$/.test(x.id)||typeof x.date!=='string')continue;
       const entries=(x.entries||[]).filter(en=>en&&EX[en.id]&&Array.isArray(en.sets)).map(en=>({id:en.id,sets:en.sets.filter(st=>st&&typeof st.reps==='number').map(st=>({kg:typeof st.kg==='number'?st.kg:0,reps:st.reps}))})).filter(en=>en.sets.length);
-      store.sessions[x.id]={date:x.date,week:weekOf(x.date),savedAt:x.savedAt||null,entries,note:typeof x.note==='string'?x.note.slice(0,1000):''};ns++;
+      const mins=v=>typeof v==='number'&&v>0&&v<=600?Math.round(v):null,padelMin=mins(x.padelMin),walkMin=mins(x.walkMin);
+      if(!entries.length&&!padelMin&&!walkMin)continue;
+      store.sessions[x.id]={date:x.date,week:weekOf(x.date),savedAt:x.savedAt||null,entries,padelMin,walkMin,note:typeof x.note==='string'?x.note.slice(0,1000):''};ns++;
     }
     persist();markBackup();afterPlanChange();
     toast(nw+' metingen en '+ns+' trainingen teruggezet'+(planSet?', plus je plan':''));
@@ -1060,6 +1121,12 @@ window.addEventListener('hashchange',()=>{showTab();window.scrollTo({top:0})});
 /* ---------- Wire up ---------- */
 ['#t-list','#t-extra-list'].forEach(sel=>{const el=$(sel);el.addEventListener('click',onTrainClick);el.addEventListener('input',onTrainInput)});
 $('#t-note').addEventListener('input',e=>{draft.note=e.target.value;touch()});
+$('#a-padel').addEventListener('change',e=>{draft.padel=e.target.checked?(draft.padel||90):null;touch();renderActs()});
+$('#a-padel-min').addEventListener('click',e=>{const b=e.target.closest('[data-min]');if(!b)return;draft.padel=+b.dataset.min;touch();renderActs()});
+$('#a-padel-min').addEventListener('keydown',e=>{if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;e.preventDefault();const i=Math.max(0,PADEL_MIN.indexOf(draft.padel)),j=Math.max(0,Math.min(2,i+(e.key==='ArrowRight'?1:-1)));draft.padel=PADEL_MIN[j];touch();renderActs();$('#a-padel-min [data-min="'+draft.padel+'"]').focus()});
+$('#a-walk').addEventListener('change',e=>{draft.walk=e.target.checked?(draft.walk||'30'):null;touch();renderActs();if(e.target.checked)$('#a-walk-min').focus()});
+$('#a-walk-box').addEventListener('click',e=>{const b=e.target.closest('[data-walk]');if(!b)return;let v=parseInt(draft.walk,10);if(isNaN(v))v=30;else v=b.dataset.walk==='+'?Math.min(600,v+5):Math.max(5,v-5);draft.walk=String(v);$('#a-walk-min').value=draft.walk;touch()});
+$('#a-walk-min').addEventListener('input',e=>{draft.walk=e.target.value.replace(/[^0-9]/g,'').slice(0,3);if(e.target.value!==draft.walk)e.target.value=draft.walk;touch()});
 $('#t-save').addEventListener('click',saveTraining);
 $('#t-new').addEventListener('click',e=>startNew(e.currentTarget));
 $('#t-date').addEventListener('change',e=>{
