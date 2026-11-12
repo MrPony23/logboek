@@ -1,5 +1,5 @@
 // Logboek – werkt offline. Verhoog VERSION bij elke nieuwe versie (gelijk aan APP_VERSION in index.html).
-const VERSION='v4';
+const VERSION='v5';
 const CACHE='logboek-'+VERSION;
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-v3-192.png','./icon-v3-512.png','./icon-v3-maskable-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL.map(u=>new Request(u,{cache:'reload'})))))});
