@@ -33,7 +33,7 @@ img{max-width:100%}
   --bg:#eef1f4; --surface:#ffffff; --surface-2:#e5eaf0; --ink:#16202b; --ink-2:#566272; --line:#cdd5de;
   --accent:#1d5bd0; --accent-soft:#9dbaf0; --accent-wash:#e1eafb; --on-accent:#ffffff;
   --pin:#d23f2c; --good:#1d8456; --good-wash:#dcf1e6; --warn:#9a6412; --warn-wash:#f8ecd6;
-  --scrim:rgba(14,22,32,.45); --trend:#7b4fd1; --snack-act:#9dbaf0;
+  --scrim:rgba(14,22,32,.45); --trend:#7b4fd1; --snack-act:#9dbaf0; --fig:#f6f8fa; --fig-line:#97a3b1;
   --dock:61px;
   --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
   --body:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -44,14 +44,14 @@ img{max-width:100%}
     --bg:#0e1319; --surface:#161d26; --surface-2:#202935; --ink:#e7ecf2; --ink-2:#98a4b2; --line:#2c3846;
     --accent:#6f9dff; --accent-soft:#4a6fbf; --accent-wash:#1a2740; --on-accent:#0b1220;
     --pin:#ff6a55; --good:#53c48d; --good-wash:#16301f; --warn:#e3ab50; --warn-wash:#33270f;
-    --scrim:rgba(0,0,0,.62); --trend:#b49cff; --snack-act:#1d5bd0; color-scheme:dark;
+    --scrim:rgba(0,0,0,.62); --trend:#b49cff; --snack-act:#1d5bd0; --fig:#2a3442; --fig-line:#66768a; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0e1319; --surface:#161d26; --surface-2:#202935; --ink:#e7ecf2; --ink-2:#98a4b2; --line:#2c3846;
   --accent:#6f9dff; --accent-soft:#4a6fbf; --accent-wash:#1a2740; --on-accent:#0b1220;
   --pin:#ff6a55; --good:#53c48d; --good-wash:#16301f; --warn:#e3ab50; --warn-wash:#33270f;
-  --scrim:rgba(0,0,0,.62); --trend:#b49cff; --snack-act:#1d5bd0; color-scheme:dark;
+  --scrim:rgba(0,0,0,.62); --trend:#b49cff; --snack-act:#1d5bd0; --fig:#2a3442; --fig-line:#66768a; color-scheme:dark;
 }
 html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
@@ -98,7 +98,10 @@ input.inp[type=date]{height:46px;padding-block:0}
 .pair-head{display:flex;align-items:center;gap:10px;font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-2);font-weight:600}
 .pair-head::after{content:"";flex:1;height:1px;background:var(--line)}
 .ex{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px}
-.ex-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.ex-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:8px;align-items:center}
+.ex-t{cursor:pointer;min-width:0}
+.ex-x{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--ink-2);display:grid;place-items:center;cursor:pointer;padding:0;flex:none}
+.ex-x svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .code{font-family:var(--display);font-weight:700;font-size:23px;color:var(--accent);min-width:30px;line-height:1}
 .ex-t h3{font-size:17px;font-weight:600;line-height:1.2}
 .ex-t p{margin:2px 0 0;font-size:13px;color:var(--ink-2)}
@@ -133,7 +136,13 @@ input.inp[type=date]{height:46px;padding-block:0}
 .btn-sm.armed{background:var(--pin);color:var(--on-accent);border-color:var(--pin)}
 .btn-sm.ok{background:var(--good);color:var(--on-accent);border-color:var(--good)}
 .btn.armed{background:var(--pin)}
-.ex.min{padding:10px 12px}
+.ex.min{padding:0}
+.ex-row{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto 18px;gap:10px;align-items:center;width:100%;min-height:56px;padding:8px 12px;background:transparent;border:0;border-radius:var(--radius);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.ex-row .code-s{font-family:var(--display);font-weight:700;font-size:19px;color:var(--accent);min-width:24px}
+.ex-nm{font-size:16px;font-weight:600;line-height:1.25;min-width:0}
+.ex-st{font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ex.min.done .ex-st{color:var(--good);font-weight:600}
+.ex-row .ex-chev{width:18px;height:18px;stroke:var(--ink-2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .ex-sum{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
 .ex-sum h3{font-size:16px;font-weight:600;line-height:1.2}
 .ex-sum .code-s{font-family:var(--display);font-weight:700;color:var(--accent);margin-right:2px}
@@ -308,6 +317,40 @@ body.rest-on{--dock:121px}
 .tprog-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .jump{border:0;background:transparent;color:var(--accent);font-weight:600;font-size:14px;min-height:40px;padding:0 2px;cursor:pointer;white-space:nowrap;font-family:inherit}
 .m-s{border:1.5px solid var(--good);border-radius:2px;box-sizing:border-box}
+.bm-where{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:10px}
+.bm-figs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bm-fig{background:var(--surface-2);border-radius:12px;padding:6px 4px 4px;display:flex;flex-direction:column;align-items:center;min-width:0}
+.bm-fig svg{width:100%;height:auto;display:block;touch-action:manipulation;cursor:crosshair}
+.bm-fig span{font-size:11.5px;color:var(--ink-2);font-weight:600;text-transform:uppercase;letter-spacing:.07em}
+.bm-body{fill:var(--fig);stroke:var(--fig-line);stroke-width:1.6;stroke-linejoin:round}
+.bm-det{fill:none;stroke:var(--fig-line);stroke-width:1.1;stroke-linecap:round;opacity:.7}
+.bm-side{fill:var(--ink-2);font:600 11px var(--body)}
+.bm-pt{fill:var(--pin);stroke:var(--surface);stroke-width:2}
+.bm-ptr{fill:none;stroke:var(--pin);stroke-width:1.5;opacity:.45}
+.bm-list{display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none}
+.bm-list li{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.bm-list li i{width:10px;height:10px;border-radius:50%;background:var(--pin);flex:none}
+.bm-list li button{margin-left:auto;border:0;background:transparent;color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;min-height:36px;cursor:pointer}
+.bm-hint{font-size:13px;color:var(--ink-2)}
+.bm-types{display:flex;flex-wrap:wrap;gap:6px}
+.bm-types button{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;min-height:38px;padding:0 13px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.bm-types button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.sd-pain{border-top:0;padding-top:0}
+#o-pain{display:flex;flex-direction:column;gap:12px}
+.sd-n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;color:var(--on-accent);font-size:12px;font-weight:700;font-style:normal;flex:none}
+.lgs{display:inline-block;width:10px;height:10px;border-radius:50%}
+.lgs.sq{border-radius:2px}
+.chart .sp-line{fill:none;stroke:var(--trend);stroke-width:2;stroke-linejoin:round}
+.chart .sp-dot{fill:var(--trend)}
+.chart .sp-ex{fill:var(--warn)}
+.sp-stats{display:flex;flex-direction:column;gap:3px;margin:0;font-size:14.5px}
+.sp-stats b{font-weight:600}
+.sp-bars{display:flex;flex-direction:column;gap:8px}
+.sp-bar{display:grid;grid-template-columns:minmax(0,1fr) 96px 30px 26px;gap:8px;align-items:center;font-size:14px}
+.sp-t{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.sp-t i{display:block;height:100%;border-radius:4px}
+.sp-bar b{font-family:var(--display);font-size:17px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.sp-bar small{font-size:12px;color:var(--ink-2);text-align:right}
 .pain{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
 .pain-h{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--ink-2);font-weight:600}
 .pain-v{font-weight:500;font-variant-numeric:tabular-nums}
@@ -459,6 +502,19 @@ button.prog{width:100%;text-align:left;background:transparent;border:0;border-bo
       </div>
       <button class="btn" type="submit" id="w-save">Gewicht opslaan</button>
     </form>
+    <div class="card" id="sd-card">
+      <h2>Schouder vandaag</h2>
+      <p class="card-sub">Los van je trainingen: hoe voelt je schouder?</p>
+      <label class="field" for="sd-date">Datum
+        <input class="inp" type="date" id="sd-date">
+      </label>
+      <div id="sd-body"></div>
+      <label class="field" for="sd-note">Notitie (optioneel)
+        <input class="inp" id="sd-note" maxlength="300" autocomplete="off" placeholder="Bijvoorbeeld: slecht geslapen op rechterzij">
+      </label>
+      <button class="btn ghost" type="button" id="sd-save">Opslaan</button>
+      <div id="sd-list" hidden></div>
+    </div>
     <div class="card" id="w-list-card">
       <h2>Gemeten</h2>
       <div id="w-list"></div>
@@ -556,6 +612,11 @@ button.prog{width:100%;text-align:left;background:transparent;border:0;border-bo
       </div>
       <p class="cal-sum" id="cal-sum"></p>
       <p class="cal-info" id="cal-info" aria-live="polite"></p>
+    </div>
+    <div class="card" id="o-pain-card">
+      <h2>Schouderpijn</h2>
+      <p class="card-sub">Laatste 4 weken: per dag en bij je oefeningen</p>
+      <div id="o-pain"></div>
     </div>
     <div class="card">
       <h2>Progressie per oefening</h2>
@@ -701,7 +762,7 @@ function inLearn(wk){return hasPlan()&&wk>=1&&wk<=3}
 function weekLabel(w){if(!hasPlan())return 'Geen plan';if(w<1)return 'Voor de start';if(w>nWeeks())return 'Na week '+nWeeks();return 'Week '+w}
 const dlong=new Intl.DateTimeFormat('nl-NL',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
 function fmtLong(s){return dlong.format(new Date(parseD(s)))}
-const APP_VERSION='v7';
+const APP_VERSION='v9';
 let swWaiting=null,swReload=false;
 let toastT=0;
 function toast(msg){hideSnack();const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600)}
@@ -887,7 +948,7 @@ const state={};
 const pend={};
 let store=lsGet(LS_DATA,null);
 if(!store||typeof store!=='object')store={sessions:{},weights:{}};
-store.sessions=store.sessions||{};store.weights=store.weights||{};store.adjustments=store.adjustments||{};
+store.sessions=store.sessions||{};store.weights=store.weights||{};store.adjustments=store.adjustments||{};store.shoulder=store.shoulder||{};
 let storeOk=true;
 function persist(){try{localStorage.setItem(LS_DATA,JSON.stringify(store));storeOk=true}catch(e){storeOk=false;toast('Opslaan op deze telefoon lukte niet. Maak direct een back-up.')}}
 function viewSessions(){
@@ -917,7 +978,7 @@ function newDraft(date){
     if(l&&SHOULDER_EX.has(id)&&!ex.ro&&painFlag(id,date)){add=-ex.step;delete bumped[id];lighter[id]=true}
     sets[id]=ex.ro?Array.from({length:3},()=>({kg:'',reps:''})):Array.from({length:n},(_,i)=>({kg:l?fmtKg(Math.max(0,(l.sets[i]||l.sets[l.sets.length-1]).kg+add)):'',reps:''}));
   }
-  return {date,sessionId:null,savedAt:null,dirty:false,sets,note:'',padel:null,walk:null,bumped,lighter,pain:{},startedAt:null,lastAt:null,stale:false};
+  return {date,sessionId:null,savedAt:null,dirty:false,sets,note:'',padel:null,walk:null,bumped,lighter,pain:{},painPts:{},painTypes:{},startedAt:null,lastAt:null,stale:false};
 }
 let draft=lsGet(LS_DRAFT,null);
 if(!draft||!draft.sets||!DATE_RE.test(draft.date||'')){draft=newDraft()}
@@ -926,6 +987,8 @@ if(draft.padel===undefined)draft.padel=null;
 if(draft.walk===undefined)draft.walk=null;
 if(!draft.bumped)draft.bumped={};
 if(!draft.pain)draft.pain={};
+if(!draft.painPts)draft.painPts={};
+if(!draft.painTypes)draft.painTypes={};
 let activeEx=null;
 /* A new day: a saved or empty draft makes way for today; unsaved input stays and gets a notice */
 let curDay=todayStr();
@@ -936,16 +999,16 @@ function checkDay(initial){
     if(draft.dirty){if(!draft.stale){draft.stale=true;saveDraft()}}
     else{draft=newDraft(t);saveDraft();activeEx=null}
   }
-  if(changed){const wd=$('#w-date');if(wd&&wd.value===prevDay)wd.value=t}
+  if(changed){const wd=$('#w-date');if(wd&&wd.value===prevDay)wd.value=t;if(typeof sd!=='undefined'&&sd&&sd.date===prevDay&&!store.shoulder[prevDay]&&sd.pain==null)sdLoad(t)}
   return true;
 }
 function saveDraft(){lsSet(LS_DRAFT,draft)}
 
 /* ---------- Writes (on this phone) ---------- */
 function writeDoc(path,data){
-  const parts=path.split('/'),bucket=parts[0]==='sessions'?store.sessions:parts[0]==='adjustments'?store.adjustments:store.weights,id=parts[1];
+  const parts=path.split('/'),bucket=parts[0]==='sessions'?store.sessions:parts[0]==='adjustments'?store.adjustments:parts[0]==='shoulder'?store.shoulder:store.weights,id=parts[1];
   if(data===null)delete bucket[id];else bucket[id]=data;
-  persist();setSync();renderOverview();renderWeights();renderAdj();
+  persist();setSync();renderOverview();renderWeights();renderAdj();renderSDList();
 }
 function markBackup(){lsSet(LS_BACKUP,new Date().toISOString());setSync()}
 function setSync(){
@@ -1038,11 +1101,12 @@ function setSummary(id){
 }
 function card(id,last){
   const ex=EX[id],rows=draft.sets[id],maxOn=!inLearn(weekOf(draft.date));
-  if(isDone(id)&&activeEx!==id){
-    return `<article class="ex min" data-ex="${id}"><div class="ex-sum"><span class="ck on big" aria-hidden="true"></span><div><h3><span class="code-s">${ex.code}</span> ${esc(ex.name)}</h3><p>${setSummary(id)}${painSum(id)}</p></div><button class="btn-sm" type="button" data-open="${id}" aria-label="${esc(ex.name)} aanpassen">Aanpassen</button></div></article>`;
+  if(activeEx!==id){
+    const done=isDone(id),n=rows.filter(r=>parseInt(r.reps,10)>0).length,st=done?'klaar':n?n+'/'+rows.length:'';
+    return `<article class="ex min${done?' done':''}" data-ex="${id}"><button class="ex-row" type="button" data-open="${id}" aria-expanded="false" aria-label="${esc(ex.name)}, ${done?'klaar':n?n+' van '+rows.length+' sets gedaan':'nog niet gedaan'}. Openen"><span class="ck${done?' on':''} big" aria-hidden="true"></span><span class="code-s">${ex.code}</span><span class="ex-nm">${esc(ex.name)}</span><span class="ex-st">${st}</span><svg class="ex-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></article>`;
   }
   return `<article class="ex" data-ex="${id}">
-    <div class="ex-h"><span class="code">${ex.code}</span><div class="ex-t"><h3>${esc(ex.name)}</h3><p>${esc(ex.device)}</p></div><button class="info-btn" type="button" data-info="${id}" aria-label="Uitleg ${esc(ex.name)}">i</button></div>
+    <div class="ex-h"><span class="code">${ex.code}</span><div class="ex-t" data-close><h3>${esc(ex.name)}</h3><p>${esc(ex.device)}</p></div><button class="info-btn" type="button" data-info="${id}" aria-label="Uitleg ${esc(ex.name)}">i</button><button class="ex-x" type="button" data-close aria-expanded="true" aria-label="${esc(ex.name)} inklappen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>
     <div class="prev-w">${prevLine(id,last,maxOn)}</div>
     <div class="sets"><div class="set-h"><span></span><span>${ex.ro?'':'Gewicht (kg)'}</span><span>Herhalingen</span></div>
     ${rows.map((r,i)=>setRow(id,i,r,!ex.ro&&maxOn&&rows.length>=3&&i===rows.length-1)).join('')}</div>
@@ -1059,11 +1123,16 @@ function replaceCard(id){
 function noteActive(cardEl,ref){
   const id=cardEl?cardEl.dataset.ex:null;if(id===activeEx)return;
   const prev=activeEx;activeEx=id;
-  if(!prev||!isDone(prev))return;
+  if(!prev)return;
   const el=document.querySelector('.ex[data-ex="'+prev+'"]');if(!el||el.classList.contains('min'))return;
   const before=ref&&ref.isConnected?ref.getBoundingClientRect().top:null;
   replaceCard(prev);
   if(before!=null&&ref.isConnected){const d=ref.getBoundingClientRect().top-before;if(Math.abs(d)>1)window.scrollBy(0,d)}
+}
+/* After opening: bring as much of the card into view as fits, without pushing its top under the header */
+function revealCard(el){
+  const r=el.getBoundingClientRect(),hh=($('.top')?$('.top').offsetHeight:0)+8,dock=$('.tabs')?$('.tabs').offsetHeight:0,limit=window.innerHeight-dock-8;
+  if(r.bottom>limit){const d=Math.min(r.bottom-limit,r.top-hh);if(d>0)window.scrollBy({top:d,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
 }
 function updateProg(){
   const main=PAIRS.flat(),n=main.filter(isDone).length,x=EXTRAS.filter(isDone).length,sb=SBLOCK.filter(isDone).length;
@@ -1118,19 +1187,25 @@ function onTrainClick(ev){
   const info=ev.target.closest('[data-info]');if(info){openInfo(info.dataset.info);return}
   const cardEl=ev.target.closest('.ex');if(!cardEl)return;const id=cardEl.dataset.ex,ex=EX[id];
   noteActive(cardEl,ev.target);
-  if(ev.target.closest('[data-open]')){activeEx=id;const n=replaceCard(id);if(n){const b=n.querySelector('.sl:not(.done)')||n.querySelector('.sl');if(b)b.focus({preventScroll:true})}return}
+  if(ev.target.closest('[data-open]')){activeEx=id;const n=replaceCard(id);if(n){const b=n.querySelector('.sl:not(.done)')||n.querySelector('.sl');if(b)b.focus({preventScroll:true});revealCard(n)}return}
+  if(ev.target.closest('[data-close]')){activeEx=null;const n=replaceCard(id);if(n){const b=n.querySelector('.ex-row');if(b)b.focus({preventScroll:true})}return}
   const rowsBtn=ev.target.closest('[data-rows]');
   if(rowsBtn){
     const rows=draft.sets[id];
     if(rowsBtn.dataset.rows==='1'){rows.push({kg:rows.length?rows[rows.length-1].kg:'',reps:''})}else if(rows.length>1){rows.pop()}
     touch();replaceCard(id);return;
   }
+  if(ev.target.closest('[data-bm]')){
+    draft.painPts=draft.painPts||{};draft.painTypes=draft.painTypes||{};
+    const st={pts:draft.painPts[id]||(draft.painPts[id]=[]),types:draft.painTypes[id]||(draft.painTypes[id]=[])};
+    if(bmTap(ev,st)){touch();rerenderPain(cardEl,id)}
+    return;
+  }
   const pb=ev.target.closest('[data-pain]');
   if(pb){
     const n=+pb.dataset.pain;draft.pain=draft.pain||{};
     if(draft.pain[id]===n)delete draft.pain[id];else draft.pain[id]=n;
-    touch();const pr=cardEl.querySelector('[data-painrow]');
-    if(pr){const t=document.createElement('div');t.innerHTML=painRow(id);pr.replaceWith(t.firstElementChild)}
+    touch();rerenderPain(cardEl,id);
     const nb=cardEl.querySelector('[data-pain="'+n+'"]');if(nb)nb.focus({preventScroll:true});
     return;
   }
@@ -1173,7 +1248,7 @@ function buildEntries(){
   const entries=[];
   for(const id of ALL){
     const sets=draft.sets[id].map(r=>({kg:num(r.kg),reps:parseInt(r.reps,10)})).filter(s=>s.reps>0).map(s=>({kg:isNaN(s.kg)?0:Math.round(s.kg*100)/100,reps:s.reps}));
-    if(sets.length){const en={id,sets};if(SHOULDER_EX.has(id)&&draft.pain&&typeof draft.pain[id]==='number')en.pain=draft.pain[id];entries.push(en)}
+    if(sets.length){const en={id,sets};if(SHOULDER_EX.has(id)&&draft.pain&&typeof draft.pain[id]==='number'){en.pain=draft.pain[id];if(en.pain>=1){const pp=sanPts((draft.painPts||{})[id]),pt=sanTypes((draft.painTypes||{})[id]);if(pp.length)en.painPts=pp;if(pt.length)en.painTypes=pt}}entries.push(en)}
   }
   return entries;
 }
@@ -1419,7 +1494,7 @@ function renderHistory(ss){
       <div class="hist-body"${isOpen?'':' hidden'}>
         ${s.padelMin?`<div class="hist-ex">Padel<span>${s.padelMin} minuten</span></div>`:''}
         ${s.walkMin?`<div class="hist-ex">Wandelen<span>${s.walkMin} minuten</span></div>`:''}
-        ${(s.entries||[]).map(en=>`<div class="hist-ex">${esc(EX[en.id]?EX[en.id].name:en.id)}<span>${en.sets.map(x=>EX[en.id]&&EX[en.id].ro?x.reps+'×':esc(fmtKg(x.kg))+' kg × '+x.reps).join(' · ')}${typeof en.pain==='number'?' · pijn '+en.pain:''}</span></div>`).join('')}
+        ${(s.entries||[]).map(en=>`<div class="hist-ex">${esc(EX[en.id]?EX[en.id].name:en.id)}<span>${en.sets.map(x=>EX[en.id]&&EX[en.id].ro?x.reps+'×':esc(fmtKg(x.kg))+' kg × '+x.reps).join(' · ')}${typeof en.pain==='number'?' · pijn '+en.pain+(painDesc(en.painPts,en.painTypes)?' ('+esc(painDesc(en.painPts,en.painTypes))+')':''):''}</span></div>`).join('')}
         ${s.note?`<p class="hist-note">${esc(s.note)}</p>`:''}
         <div class="hist-act"><button class="btn-sm" type="button" data-edit="${esc(s.id)}">Bewerken</button><button class="btn-sm danger" type="button" data-dels="${esc(s.id)}">Verwijderen</button></div>
       </div></div>`;
@@ -1431,14 +1506,15 @@ function renderOverview(){
   $('#o-chart').innerHTML=chartSVG(ws,ss,fc);updateZoomUI();
   {const al=adjListHTML(),ob=$('#o-adj');ob.innerHTML=al;ob.hidden=!al}
   renderCal(ws,ss);
+  renderPainOverview(ss);
   renderProgress(ss);renderHistory(ss);renderExport(ws,ss);
 }
 function editSession(id){
   const s=viewSessions().find(x=>x.id===id);if(!s)return;
   const n=defaultSets(weekOf(s.date)),sets={},old=draft,wasDirty=draft.dirty&&draft.sessionId!==id;
   for(const ex of ALL){const en=(s.entries||[]).find(e=>e.id===ex);sets[ex]=en?en.sets.map(x=>({kg:fmtKg(x.kg),reps:String(x.reps)})):Array.from({length:n},()=>({kg:'',reps:''}))}
-  const pain={};(s.entries||[]).forEach(e=>{if(typeof e.pain==='number')pain[e.id]=e.pain});
-  draft={date:s.date,sessionId:s.id,savedAt:s.savedAt||null,dirty:false,sets,note:s.note||'',padel:s.padelMin||null,walk:s.walkMin?String(s.walkMin):null,bumped:{},lighter:{},pain,startedAt:null,lastAt:null,durationMin:s.durationMin||null,stale:false};
+  const pain={},painPts={},painTypes={};(s.entries||[]).forEach(e=>{if(typeof e.pain==='number')pain[e.id]=e.pain;if(e.painPts)painPts[e.id]=sanPts(e.painPts);if(e.painTypes)painTypes[e.id]=sanTypes(e.painTypes)});
+  draft={date:s.date,sessionId:s.id,savedAt:s.savedAt||null,dirty:false,sets,note:s.note||'',padel:s.padelMin||null,walk:s.walkMin?String(s.walkMin):null,bumped:{},lighter:{},pain,painPts,painTypes,startedAt:null,lastAt:null,durationMin:s.durationMin||null,stale:false};
   activeEx=null;saveDraft();renderTraining();location.hash='#training';
   if(wasDirty)snack('Training geladen; je niet-opgeslagen invoer is vervangen',()=>{draft=old;saveDraft();activeEx=null;renderTraining()});
   else toast('Training geladen om te bewerken');
@@ -1539,9 +1615,10 @@ function painTip(id,lighter){
 function painRow(id){
   const v=draft.pain&&typeof draft.pain[id]==='number'?draft.pain[id]:null;
   let b='';for(let n=0;n<=10;n++)b+=`<button type="button" role="radio" class="pb ${painLvl(n)}" data-pain="${n}" aria-checked="${v===n}" aria-label="Pijn ${n} van 10">${n}</button>`;
-  return `<div class="pain" data-painrow><div class="pain-h"><span>Schouderpijn</span><span class="pain-v">${v==null?'0 = geen, 10 = ergst':v+' van 10'}</span></div><div class="pain-g" role="radiogroup" aria-label="Schouderpijn bij ${esc(EX[id].name)}">${b}</div>${v!=null&&v>=4?'<p class="pain-warn">Boven de 3: stop deze oefening of ga een stap lichter.</p>':''}</div>`;
+  return `<div class="pain" data-painrow><div class="pain-h"><span>Schouderpijn</span><span class="pain-v">${v==null?'0 = geen, 10 = ergst':v+' van 10'}</span></div><div class="pain-g" role="radiogroup" aria-label="Schouderpijn bij ${esc(EX[id].name)}">${b}</div>${v!=null&&v>=4?'<p class="pain-warn">Boven de 3: stop deze oefening of ga een stap lichter.</p>':''}${v!=null&&v>=1?bmWhere(draft.painPts&&draft.painPts[id],draft.painTypes&&draft.painTypes[id]):''}</div>`;
 }
-function painSum(id){return SHOULDER_EX.has(id)&&draft.pain&&typeof draft.pain[id]==='number'?' · pijn '+draft.pain[id]:''}
+function rerenderPain(cardEl,id){const pr=cardEl.querySelector('[data-painrow]');if(pr){const t=document.createElement('div');t.innerHTML=painRow(id);pr.replaceWith(t.firstElementChild)}}
+function painSum(id){if(!(SHOULDER_EX.has(id)&&draft.pain&&typeof draft.pain[id]==='number'))return '';const v=draft.pain[id],d=v>=1?painDesc(draft.painPts&&draft.painPts[id],draft.painTypes&&draft.painTypes[id]):'';return ' · pijn '+v+(d?' ('+esc(d)+')':'')}
 /* ---------- Training duration: first to last set ---------- */
 function durOf(a,b){if(!a||!b)return null;const m=Math.round((b-a)/60000);return m>=0&&m<=240?Math.max(1,m):null}
 function markSet(){if(draft.sessionId&&!draft.startedAt)return;const t=Date.now();if(!draft.startedAt)draft.startedAt=t;draft.lastAt=t}
@@ -1595,7 +1672,110 @@ function renderCalInfo(ss){
   if(p)parts.push('padel '+p+' min');if(l)parts.push('wandelen '+l+' min');
   const pains=day.flatMap(s=>(s.entries||[]).map(e=>typeof e.pain==='number'?e.pain:-1)).filter(v=>v>=0);
   if(pains.length)parts.push('schouderpijn max '+Math.max(...pains));
+  const sdd=store.shoulder[ds];if(sdd&&typeof sdd.pain==='number')parts.push('schouder vandaag: pijn '+sdd.pain);
   $('#cal-info').innerHTML=`<b>${esc(fmtDate(ds))}</b>: ${parts.length?esc(parts.join(' · ')):'niets ingevuld'}`;
+}
+
+/* ---------- Body map: where it hurts and what kind of pain ---------- */
+const PAIN_TYPES=['Stekend','Zeurend','Brandend','Tintelend','Uitstralend','Stijf','Klikkend'];
+const BM_OUT='M91,48 L90,60 C86,64 70,66 58,72 C44,78 36,88 36,100 L34,170 C34,178 50,178 50,170 L54,112 L64,114 L68,224 L132,224 L136,114 L146,112 L150,170 C150,178 166,178 166,170 L164,100 C164,88 156,78 142,72 C130,66 114,64 110,60 L109,48 Z';
+const BM_F='M90,64 Q76,68 58,74 M110,64 Q124,68 142,74 M64,114 Q82,124 98,116 M136,114 Q118,124 102,116 M58,74 Q52,92 56,110 M142,74 Q148,92 144,110';
+const BM_B='M100,60 L100,220 M70,86 L94,90 L90,136 Q78,124 70,86 M130,86 L106,90 L110,136 Q122,124 130,86 M58,74 Q52,92 56,110 M142,74 Q148,92 144,110';
+/* zones on the left half of each figure; the right half mirrors. Front view: left half is your right side */
+const BM_ANC={f:[['nek',82,62],['bovenkant schouder',60,76],['voorkant schouder',63,93],['zijkant schouder',40,97],['borst',80,106],['bovenarm',42,135]],
+              b:[['nek',82,62],['bovenkant schouderblad',80,84],['achterkant schouder',58,92],['zijkant schouder',40,97],['schouderblad',82,114],['bovenarm achter',42,135]]};
+function bmZone(p){
+  const left=p.x<100,mx=left?p.x:200-p.x,side=p.v==='f'?(left?'Rechts':'Links'):(left?'Links':'Rechts');
+  let best='',bd=1e9;for(const a of BM_ANC[p.v]||[]){const d=(a[1]-mx)**2+(a[2]-p.y)**2;if(d<bd){bd=d;best=a[0]}}
+  return {side,zone:best};
+}
+function bmName(p){const z=bmZone(p);return z.side+' · '+z.zone}
+function bmShort(p){const z=bmZone(p);return z.side.toLowerCase()+' '+z.zone}
+function painDesc(pts,types){const a=[...new Set((pts||[]).map(bmShort))];return [a.join(', '),(types||[]).map(t=>t.toLowerCase()).join(', ')].filter(Boolean).join('; ')}
+function bmFig(v,inner){
+  return `<div class="bm-fig" data-v="${v}"><svg viewBox="0 0 200 232" role="img" aria-label="${v==='f'?'Voorkant':'Achterkant'} van je bovenlichaam"><circle class="bm-body" cx="100" cy="28" r="19"/><path class="bm-body" d="${BM_OUT}"/><path class="bm-det" d="${v==='f'?BM_F:BM_B}"/><text class="bm-side" x="14" y="66">${v==='f'?'R':'L'}</text><text class="bm-side" x="180" y="66">${v==='f'?'L':'R'}</text>${inner||''}</svg><span>${v==='f'?'voorkant':'achterkant'}</span></div>`;
+}
+function bmWhere(pts,types){
+  pts=pts||[];types=types||[];
+  const dots=v=>pts.filter(p=>p.v===v).map(p=>`<circle class="bm-ptr" cx="${p.x}" cy="${p.y}" r="11"/><circle class="bm-pt" cx="${p.x}" cy="${p.y}" r="6"/>`).join('');
+  return `<div class="bm-where" data-bm>
+    <div class="pain-h"><span>Waar deed het pijn?</span><span>tik in de figuur</span></div>
+    <div class="bm-figs">${bmFig('f',dots('f'))}${bmFig('b',dots('b'))}</div>
+    <ul class="bm-list">${pts.length?pts.map((p,i)=>`<li><i></i>${esc(bmName(p))}<button type="button" data-bmrm="${i}" aria-label="Punt ${esc(bmName(p))} weghalen">Weghalen</button></li>`).join(''):'<li class="bm-hint">Nog geen punt gezet. Je kunt er tot 3 zetten.</li>'}</ul>
+    <div class="pain-h"><span>Wat voor pijn?</span><span>meerdere mogelijk</span></div>
+    <div class="bm-types">${PAIN_TYPES.map(t=>`<button type="button" data-ptype="${t}" aria-pressed="${types.includes(t)}">${t}</button>`).join('')}</div>
+  </div>`;
+}
+/* A tap inside a body map: mutates st={pts,types}; true when it was handled */
+function bmTap(ev,st){
+  if(!ev.target.closest('[data-bm]'))return false;
+  const rm=ev.target.closest('[data-bmrm]');if(rm){st.pts.splice(+rm.dataset.bmrm,1);return true}
+  const ty=ev.target.closest('[data-ptype]');if(ty){const t=ty.dataset.ptype,i=st.types.indexOf(t);if(i>=0)st.types.splice(i,1);else st.types.push(t);return true}
+  const svg=ev.target.closest('.bm-fig svg');if(!svg)return false;
+  const m=svg.getScreenCTM();if(!m)return true;
+  const pt=svg.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;const q=pt.matrixTransform(m.inverse());
+  const v=svg.closest('.bm-fig').dataset.v,x=Math.round(Math.max(4,Math.min(196,q.x))),y=Math.round(Math.max(4,Math.min(228,q.y)));
+  const hit=st.pts.findIndex(p=>p.v===v&&Math.hypot(p.x-x,p.y-y)<12);
+  if(hit>=0)st.pts.splice(hit,1);else{if(st.pts.length>=3)st.pts.shift();st.pts.push({v,x,y})}
+  return true;
+}
+function sanPts(a){return Array.isArray(a)?a.filter(p=>p&&(p.v==='f'||p.v==='b')&&typeof p.x==='number'&&typeof p.y==='number').slice(0,3).map(p=>({v:p.v,x:Math.round(Math.max(0,Math.min(200,p.x))),y:Math.round(Math.max(0,Math.min(232,p.y)))})):[]}
+function sanTypes(a){return Array.isArray(a)?a.filter(t=>PAIN_TYPES.includes(t)):[]}
+function painCol(n){return n<=3?'var(--good)':n<=6?'var(--warn)':'var(--pin)'}
+/* ---------- Shoulder today (daily, Gewicht tab) ---------- */
+function viewSD(){return Object.keys(store.shoulder).map(k=>store.shoulder[k]).filter(d=>d&&DATE_RE.test(d.date||'')&&typeof d.pain==='number').sort((a,b)=>a.date.localeCompare(b.date))}
+let sd=null;
+function sdLoad(date){
+  const d=store.shoulder[date];
+  sd={date,pain:d&&typeof d.pain==='number'?d.pain:null,pts:d?sanPts(d.pts):[],types:d?sanTypes(d.types):[],note:d&&typeof d.note==='string'?d.note:''};
+  $('#sd-date').value=date;$('#sd-note').value=sd.note;renderSDBody();
+}
+function renderSDBody(){
+  const v=sd.pain;let b='';
+  for(let n=0;n<=10;n++)b+=`<button type="button" role="radio" class="pb ${painLvl(n)}" data-sdpain="${n}" aria-checked="${v===n}" aria-label="Pijn ${n} van 10">${n}</button>`;
+  $('#sd-body').innerHTML=`<div class="pain sd-pain"><div class="pain-h"><span>Pijn</span><span class="pain-v">${v==null?'0 = geen, 10 = ergst':v+' van 10'}</span></div><div class="pain-g" role="radiogroup" aria-label="Schouderpijn op deze dag">${b}</div>${v!=null&&v>=1?bmWhere(sd.pts,sd.types):''}</div>`;
+  $('#sd-save').textContent=store.shoulder[sd.date]?'Bijwerken':'Opslaan';
+}
+function renderSDList(){
+  const box=$('#sd-list');if(!box)return;const arr=viewSD().slice(-7).reverse();
+  box.innerHTML=arr.length?arr.map(d=>{const ds=painDesc(d.pts,d.types);return `<div class="w-row adj-row"><div class="w-date"><span class="adj-in"><i class="sd-n" style="background:${painCol(d.pain)}">${d.pain}</i>${esc(fmtDate(d.date))}</span><small>${esc(ds||'geen plek of soort ingevuld')}${d.note?' · '+esc(d.note):''}</small></div><button class="btn-sm danger" type="button" data-delsd="${d.date}" aria-label="Schouder ${esc(fmtDate(d.date))} verwijderen">Verwijder</button></div>`}).join(''):'';
+  box.hidden=!arr.length;
+}
+function saveSD(){
+  if(sd.pain==null){toast('Tik eerst een pijnscore aan; 0 is geen pijn.');return}
+  const prev=store.shoulder[sd.date];
+  const doc={date:sd.date,pain:sd.pain,pts:sd.pain>=1?sd.pts.map(p=>({v:p.v,x:p.x,y:p.y})):[],types:sd.pain>=1?sd.types.slice():[],note:(sd.note||'').trim().slice(0,300),savedAt:new Date().toISOString()};
+  writeDoc('shoulder/'+sd.date,doc);renderSDBody();
+  if(prev)snack('Schouder '+fmtDate(sd.date)+' bijgewerkt',()=>{writeDoc('shoulder/'+prev.date,prev);sdLoad(prev.date);toast('Vorige invoer teruggezet')});
+  else toast('Schouder opgeslagen');
+}
+/* ---------- Overview: shoulder pain, last 4 weeks ---------- */
+const MON=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+function dnum(d){const [a,b,c]=d.split('-').map(Number);return Date.UTC(a,b-1,c)/864e5}
+function renderPainOverview(ss){
+  const box=$('#o-pain'),t=todayStr(),from=addDays(t,-27),N=28;
+  const days=viewSD().filter(d=>d.date>=from&&d.date<=t),exE=[];
+  for(const s of ss){if(s.date<from||s.date>t)continue;for(const e of (s.entries||[])){if(typeof e.pain==='number')exE.push({date:s.date,id:e.id,pain:e.pain,pts:e.painPts||[],types:e.painTypes||[]})}}
+  if(!days.length&&!exE.length){box.innerHTML='<p class="empty">Nog geen schouderpijn ingevuld. Dat doe je bij een schouderoefening, of op het tabblad Gewicht bij "Schouder vandaag".</p>';return}
+  const W=360,H=150,L=26,R=10,T=10,B=24,PH=H-T-B,x=i=>L+i*(W-L-R)/(N-1),y=v=>T+(10-v)/10*PH,ix=d=>dnum(d)-dnum(from);
+  let c=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Schouderpijn per dag, laatste 4 weken">`;
+  [0,3,5,10].forEach(v=>{c+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="tick" x="${L-6}" y="${y(v)+3.5}" text-anchor="end">${v}</text>`});
+  for(let i=0;i<N;i+=7){const d=addDays(from,i),[,mm,dd]=d.split('-').map(Number);c+=`<text class="tick" x="${x(i)}" y="${H-6}" text-anchor="${i===0?'start':'middle'}">${dd} ${MON[mm-1]}</text>`}
+  if(days.length>1)c+=`<polyline class="sp-line" points="${days.map(d=>x(ix(d.date))+','+y(d.pain)).join(' ')}"/>`;
+  days.forEach(d=>{c+=`<circle class="sp-dot" cx="${x(ix(d.date))}" cy="${y(d.pain)}" r="3.4"><title>${esc(fmtDate(d.date))}: ${d.pain}</title></circle>`});
+  const exMax={};exE.forEach(e=>{exMax[e.date]=Math.max(exMax[e.date]==null?-1:exMax[e.date],e.pain)});
+  Object.keys(exMax).forEach(d=>{c+=`<rect class="sp-ex" x="${x(ix(d))-4}" y="${y(exMax[d])-4}" width="8" height="8" rx="1.5"><title>${esc(fmtDate(d))}: hoogste bij training ${exMax[d]}</title></rect>`});
+  c+='</svg>';
+  const all=[...days.map(d=>({pain:d.pain,pts:d.pts||[],types:d.types||[]})),...exE];
+  const heat=v=>all.flatMap(a=>(a.pts||[]).filter(p=>p.v===v).map(p=>`<circle cx="${p.x}" cy="${p.y}" r="8" fill="${painCol(a.pain)}" opacity=".5"/>`)).join('');
+  const zc={},tc={};all.forEach(a=>{(a.pts||[]).forEach(p=>{const k=bmShort(p);zc[k]=(zc[k]||0)+1});(a.types||[]).forEach(tp=>{tc[tp]=(tc[tp]||0)+1})});
+  const zs=Object.entries(zc).sort((a,b)=>b[1]-a[1]),ts=Object.entries(tc).sort((a,b)=>b[1]-a[1]);
+  const byEx={};exE.forEach(e=>{(byEx[e.id]=byEx[e.id]||[]).push(e.pain)});
+  const bars=Object.entries(byEx).map(([id,a])=>[id,a.reduce((s,v)=>s+v,0)/a.length,a.length]).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  box.innerHTML=`${c}<div class="legend"><span><i class="lgs" style="background:var(--trend)"></i>schouder vandaag</span><span><i class="lgs sq" style="background:var(--warn)"></i>hoogste bij een training</span></div>
+    ${zs.length?`<div class="bm-figs">${bmFig('f',heat('f'))}${bmFig('b',heat('b'))}</div><div class="legend"><span><i class="lgs" style="background:var(--good)"></i>pijn 1 tot 3</span><span><i class="lgs" style="background:var(--warn)"></i>4 tot 6</span><span><i class="lgs" style="background:var(--pin)"></i>7 tot 10</span></div>`:''}
+    ${zs.length||ts.length?`<p class="sp-stats">${zs.length?`<span><b>Meestal:</b> ${esc(zs[0][0])} (${zs[0][1]}×)${zs[1]?', daarna '+esc(zs[1][0])+' ('+zs[1][1]+'×)':''}</span>`:''}${ts.length?`<span><b>Soort:</b> ${ts.map(([k,n])=>esc(k.toLowerCase())+' '+n+'×').join(' · ')}</span>`:''}</p>`:''}
+    ${bars.length?`<div class="pain-h"><span>Gemiddelde pijn per oefening</span><span>aantal keer</span></div><div class="sp-bars">${bars.map(([id,v,n])=>`<div class="sp-bar"><span>${esc(EX[id]?EX[id].name:id)}</span><span class="sp-t"><i style="width:${Math.max(3,v*10)}%;background:${painCol(Math.round(v))}"></i></span><b>${nf1.format(v)}</b><small>${n}×</small></div>`).join('')}</div>`:''}`;
 }
 
 /* ---------- Export ---------- */
@@ -1634,6 +1814,8 @@ function exportText(ws,ss){
   if(rows.length){L.push('week;gemiddeld_gewicht_kg;richtlijn_eind_week_kg;metingen;krachttrainingen;padel_min;wandelen_min');L.push(...rows)}else L.push('Nog geen gegevens.');
   const adj=viewAdj();
   if(adj.length){L.push('');L.push('AANPASSINGEN');adj.forEach((a,i)=>L.push((i+1)+'. vanaf '+a.date+' ('+weekLabel(weekOf(a.date)).toLowerCase()+'): '+a.text))}
+  const sdA=viewSD();
+  if(sdA.length){L.push('');L.push('SCHOUDER PER DAG (pijn 0-10)');sdA.forEach(d=>{const ds=painDesc(d.pts,d.types);L.push(d.date+': '+d.pain+(ds?'; '+ds:'')+(d.note?'; '+String(d.note).replace(/\s+/g,' '):''))})}
   L.push('');
   L.push('TRAININGEN');
   if(!ss.length)L.push('Nog geen trainingen.');
@@ -1641,7 +1823,7 @@ function exportText(ws,ss){
     L.push(x.date+' ('+weekLabel(weekOf(x.date)).toLowerCase()+')');
     if(x.padelMin)L.push('- Padel: '+x.padelMin+' min');
     if(x.walkMin)L.push('- Wandelen: '+x.walkMin+' min');
-    (x.entries||[]).forEach(en=>L.push('- '+(EX[en.id]?EX[en.id].name:en.id)+': '+en.sets.map(st=>fmtSet(en.id,st)).join(', ')+(typeof en.pain==='number'?' (schouderpijn '+en.pain+'/10)':'')));
+    (x.entries||[]).forEach(en=>L.push('- '+(EX[en.id]?EX[en.id].name:en.id)+': '+en.sets.map(st=>fmtSet(en.id,st)).join(', ')+(typeof en.pain==='number'?' (schouderpijn '+en.pain+'/10'+(painDesc(en.painPts,en.painTypes)?'; '+painDesc(en.painPts,en.painTypes):'')+')':'')));
     if(x.durationMin)L.push('- Duur: '+x.durationMin+' min (eerste tot laatste set)');
     if(x.note)L.push('  Notitie: '+String(x.note).replace(/\s+/g,' '));
   });
@@ -1654,11 +1836,12 @@ function exportText(ws,ss){
 }
 function exportJSON(ws,ss){
   return JSON.stringify({
-    app:'Logboek',format:5,exportedAt:new Date().toISOString(),
+    app:'Logboek',format:6,exportedAt:new Date().toISOString(),
     settings:hasPlan()?{startDate:settings.startDate,endDate:settings.endDate,startKg:settings.startKg,goalKg:settings.goalKg}:null,
     plan:hasPlan()?{startDate:settings.startDate,endDate:settings.endDate,startKg:settings.startKg,goalKg:settings.goalKg,weeks:nWeeks(),targetEndOfWeekKg:Array.from({length:nWeeks()+1},(_,n)=>Math.round(planEnd(n)*10)/10)}:null,
     weights:ws.map(w=>({date:w.date,kg:w.kg,moment:w.moment||'ochtend'})),
     adjustments:viewAdj().map(a=>({id:a.id,date:a.date,text:a.text})),
+    shoulderDays:viewSD().map(d=>({date:d.date,pain:d.pain,pts:d.pts||[],types:d.types||[],note:d.note||''})),
     sessions:ss.map(x=>({id:x.id,date:x.date,week:weekOf(x.date),savedAt:x.savedAt||null,note:x.note||'',padelMin:x.padelMin||null,walkMin:x.walkMin||null,entries:(x.entries||[]).map(en=>({id:en.id,name:EX[en.id]?EX[en.id].name:en.id,sets:en.sets}))}))
   },null,2);
 }
@@ -1697,7 +1880,7 @@ function importBackup(file){
     for(const w of d.weights){if(w&&typeof w.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(w.date)&&typeof w.kg==='number'){store.weights[w.date]={date:w.date,kg:w.kg,moment:w.moment==='avond'?'avond':'ochtend'};nw++}}
     for(const x of d.sessions){
       if(!x||typeof x.id!=='string'||!/^[A-Za-z0-9_.~:@+-]{1,100}$/.test(x.id)||typeof x.date!=='string')continue;
-      const entries=(x.entries||[]).filter(en=>en&&EX[en.id]&&Array.isArray(en.sets)).map(en=>{const o={id:en.id,sets:en.sets.filter(st=>st&&typeof st.reps==='number').map(st=>({kg:typeof st.kg==='number'?st.kg:0,reps:st.reps}))};if(typeof en.pain==='number'&&en.pain>=0&&en.pain<=10)o.pain=Math.round(en.pain);return o}).filter(en=>en.sets.length);
+      const entries=(x.entries||[]).filter(en=>en&&EX[en.id]&&Array.isArray(en.sets)).map(en=>{const o={id:en.id,sets:en.sets.filter(st=>st&&typeof st.reps==='number').map(st=>({kg:typeof st.kg==='number'?st.kg:0,reps:st.reps}))};if(typeof en.pain==='number'&&en.pain>=0&&en.pain<=10)o.pain=Math.round(en.pain);const pp=sanPts(en.painPts),pt=sanTypes(en.painTypes);if(pp.length)o.painPts=pp;if(pt.length)o.painTypes=pt;return o}).filter(en=>en.sets.length);
       const mins=v=>typeof v==='number'&&v>0&&v<=600?Math.round(v):null,padelMin=mins(x.padelMin),walkMin=mins(x.walkMin);
       if(!entries.length&&!padelMin&&!walkMin)continue;
       store.sessions[x.id]={date:x.date,week:weekOf(x.date),savedAt:x.savedAt||null,entries,padelMin,walkMin,durationMin:mins(x.durationMin),note:typeof x.note==='string'?x.note.slice(0,1000):''};ns++;
@@ -1708,7 +1891,11 @@ function importBackup(file){
       const id=typeof a.id==='string'&&/^[A-Za-z0-9_.-]{1,60}$/.test(a.id)?a.id:'a-'+a.date.replace(/-/g,'')+'-'+(++na);
       store.adjustments[id]={date:a.date,text:a.text.trim().slice(0,140),savedAt:a.savedAt||null};
     }
-    persist();markBackup();afterPlanChange();renderAdj();
+    if(Array.isArray(d.shoulderDays))for(const x of d.shoulderDays){
+      if(!x||!DATE_RE.test(x.date||'')||typeof x.pain!=='number'||x.pain<0||x.pain>10)continue;
+      store.shoulder[x.date]={date:x.date,pain:Math.round(x.pain),pts:sanPts(x.pts),types:sanTypes(x.types),note:typeof x.note==='string'?x.note.slice(0,300):'',savedAt:x.savedAt||null};
+    }
+    persist();markBackup();afterPlanChange();renderAdj();renderSDList();if(sd)sdLoad(sd.date);
     toast(nw+' metingen en '+ns+' trainingen teruggezet'+(planSet?', plus je plan':''));
   };
   rd.onerror=()=>toast('Het bestand kon niet worden gelezen.');
@@ -1910,6 +2097,16 @@ $('#zoom').addEventListener('click',e=>{
   zoomW=z>0&&z<NW?z:0;lsSet(LS_ZOOM,zoomW);drawChart();
 });
 $('#snack-b').addEventListener('click',()=>{const f=snackFn;hideSnack();if(f)f()});
+$('#sd-body').addEventListener('click',e=>{const pb=e.target.closest('[data-sdpain]');if(pb){const n=+pb.dataset.sdpain;sd.pain=sd.pain===n?null:n;renderSDBody();return}if(bmTap(e,sd))renderSDBody()});
+$('#sd-date').addEventListener('change',e=>{if(e.target.value)sdLoad(e.target.value)});
+$('#sd-note').addEventListener('input',e=>{sd.note=e.target.value});
+$('#sd-save').addEventListener('click',saveSD);
+$('#sd-list').addEventListener('click',e=>{
+  const b=e.target.closest('[data-delsd]');if(!b)return;const d=b.dataset.delsd,prev=store.shoulder[d];if(!prev)return;
+  writeDoc('shoulder/'+d,null);if(sd&&sd.date===d)sdLoad(d);
+  snack('Schouder '+fmtDate(d)+' verwijderd',()=>{writeDoc('shoulder/'+d,prev);if(sd&&sd.date===d)sdLoad(d);toast('Teruggezet')});
+});
+sdLoad(todayStr());renderSDList();
 $('#t-jump').addEventListener('click',()=>{const h=$('#t-sh-head'),top=h.getBoundingClientRect().top+window.scrollY-($('.top')?$('.top').offsetHeight:0)-12;window.scrollTo({top,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
 $('#cal').addEventListener('click',e=>{const b=e.target.closest('[data-day]');if(!b)return;calSel=b.dataset.day;$('#cal').querySelectorAll('[data-day]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderCalInfo(viewSessions())});
 $('#cal-prev').addEventListener('click',()=>{calMonth=ymAdd(calMonth,-1);renderCal(viewWeights(),viewSessions())});
