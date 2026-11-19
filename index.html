@@ -351,6 +351,15 @@ body.rest-on{--dock:121px}
 .sp-t i{display:block;height:100%;border-radius:4px}
 .sp-bar b{font-family:var(--display);font-size:17px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
 .sp-bar small{font-size:12px;color:var(--ink-2);text-align:right}
+.next{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.seg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.seg3 button{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;min-height:52px;padding:4px;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.seg3 button b{font-weight:600;font-size:15px}
+.seg3 button small{font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.seg3 button[aria-checked="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.seg3 button[aria-checked="true"] small{color:var(--on-accent);opacity:.85}
+.next-hint{margin:0;font-size:13px;color:var(--good);font-weight:600}
+.next-hint.warn{color:var(--pin)}
 .pain{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
 .pain-h{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--ink-2);font-weight:600}
 .pain-v{font-weight:500;font-variant-numeric:tabular-nums}
@@ -762,7 +771,7 @@ function inLearn(wk){return hasPlan()&&wk>=1&&wk<=3}
 function weekLabel(w){if(!hasPlan())return 'Geen plan';if(w<1)return 'Voor de start';if(w>nWeeks())return 'Na week '+nWeeks();return 'Week '+w}
 const dlong=new Intl.DateTimeFormat('nl-NL',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
 function fmtLong(s){return dlong.format(new Date(parseD(s)))}
-const APP_VERSION='v9';
+const APP_VERSION='v12';
 let swWaiting=null,swReload=false;
 let toastT=0;
 function toast(msg){hideSnack();const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600)}
@@ -917,7 +926,7 @@ const EX={
       const hand=P(226,145),sh=P(224,98),foot=P(70,197),T=P(217,mix(95,104,e)),ang=Math.atan2(T.y-foot.y,T.x-foot.x)*180/Math.PI,hip=P((foot.x+T.x)/2,(foot.y+T.y)/2);
       R.line(foot,go(foot,12,ang-80),'body');R.line(foot,hip,'body');R.line(hip,T,'body');R.dot(go(T,22,ang-12),10.5,'body');
       R.line(sh,hand,'body');R.line(T,sh,'work');R.dot(sh,6,'work2')}},
-  scapfloor:{code:'S3',name:'Scapula push-up op de grond',device:'Hoge plank op de grond, handen onder je schouders',step:0,bw:true,ro:true,equip:'eigen gewicht',view:'Zijaanzicht',
+  scapfloor:{code:'S4',name:'Scapula push-up op de grond',device:'Hoge plank op de grond, handen onder je schouders',step:0,bw:true,ro:true,equip:'eigen gewicht',view:'Zijaanzicht',
     steps:['Ga in een hoge plank: handen onder je schouders, lichaam in een rechte lijn van hoofd tot hielen.','Houd je armen gestrekt en laat je borst tussen je schouders zakken: je schouderbladen gaan naar elkaar toe.','Duw de grond weg tot je bovenrug licht bol staat.','Neem 2 tellen omlaag en 2 tellen omhoog. Te zwaar? Doe de schuine versie op de bank.'],
     primary:['Serratus anterior (spier langs je ribben)'],secondary:['Middelste en onderste trapezius','Buikspieren (stabiliteit)'],
     shoulder:'Zwaarder dan de schuine versie. Gaat je techniek achteruit of gaat je schouder tegenstaan, doe dan de schuine variant.',
@@ -925,7 +934,7 @@ const EX={
       const hand=P(230,197),sh=P(228,150),foot=P(64,196),T=P(221,mix(147,156,e)),ang=Math.atan2(T.y-foot.y,T.x-foot.x)*180/Math.PI,hip=P((foot.x+T.x)/2,(foot.y+T.y)/2);
       R.line(foot,go(foot,12,ang-80),'body');R.line(foot,hip,'body');R.line(hip,T,'body');R.dot(go(T,22,ang-14),10.5,'body');
       R.line(sh,hand,'body');R.line(T,sh,'work');R.dot(sh,6,'work2')}},
-  bandrow:{code:'S4',name:'Roeien met elastiek',device:'Elastiek om een deur of paal',step:0,bw:true,ro:true,equip:'elastiek',view:'Zijaanzicht',
+  bandrow:{code:'S5',name:'Roeien met elastiek',device:'Elastiek om een deur of paal',step:0,bw:true,ro:true,equip:'elastiek',view:'Zijaanzicht',
     steps:['Maak het elastiek vast aan een deur of paal en houd de uiteinden vast. Stap naar achter tot er spanning op staat, armen gestrekt voor je.','Trek eerst je schouderbladen naar achter en omlaag.','Trek je handen naar je toe met je ellebogen langs je lichaam, tot je ellebogen net achter je middel zijn.','Laat rustig terugkomen tot je armen weer gestrekt zijn.'],
     primary:['Bovenrug (rhomboïden, middelste trapezius)','Brede rugspier (latissimus)'],secondary:['Achterkant schouder','Biceps'],
     shoulder:'Houd je schouders laag, trek niet verder dan pijnvrij en laat het elastiek niet terugschieten.',
@@ -935,10 +944,30 @@ const EX={
       R.line(hip,sh,'work');R.dot(P(198,58),12,'body');
       const el=go(sh,31,mix(172,62,e)),hand=go(el,28,mix(178,172,e));
       R.line(anc,hand,'thin');R.line(sh,el,'work2');R.line(el,hand,'body');R.dot(hand,4.5,'kitFill')}},
+  shtap:{code:'S3',name:'Shoulder taps, schuin',device:'Handen op een bank, voeten op de grond',step:0,bw:true,ro:true,equip:'eigen gewicht',view:'Zijaanzicht',
+    steps:['Zet je handen op schouderbreedte op een bank en stap naar achter tot je lichaam een rechte lijn is, zoals bij de scapula push-up.','Span je buik aan. Zet je voeten iets verder uit elkaar voor meer balans.','Til één hand op en tik je andere schouder aan, zodat je even op één arm leunt. Zet de hand rustig terug.','Wissel van kant. Houd je heupen stil: ze draaien en zakken niet mee. Tel elke tik als één herhaling.'],
+    primary:['Core (buikspieren en schuine buikspieren)','Serratus anterior en rotatorenmanchet van de steunende arm'],secondary:['Borst','Triceps'],
+    shoulder:'De steunende schouder draagt even je gewicht: duw de bank actief weg en laat je schouder niet inzakken. Doet het pijn, zet dan je voeten verder uit elkaar of kies een hogere bank.',
+    anim(R,e){R.line(P(40,200),P(280,200),'floor');R.line(P(204,146),P(272,146),'pad');R.line(P(212,146),P(212,199),'thin');R.line(P(264,146),P(264,199),'thin');
+      const hand=P(224,145),sh=P(222,98),foot=P(70,197),T=P(216,99),ang=Math.atan2(T.y-foot.y,T.x-foot.x)*180/Math.PI,hip=P((foot.x+T.x)/2,(foot.y+T.y)/2);
+      R.line(foot,go(foot,12,ang-80),'body');R.line(foot,hip,'work');R.line(hip,T,'work');R.dot(go(T,22,ang-12),10.5,'body');
+      R.line(sh,hand,'work2');R.dot(sh,6,'work');
+      const el=P(mix(232,244,e),mix(122,114,e)),h2=P(mix(236,214,e),mix(145,100,e));
+      R.line(sh,el,'body');R.line(el,h2,'body');R.dot(h2,4,'kitFill')}},
+  erpress:{code:'S6',name:'Armen wijd en omhoog',device:'Twee lichte dumbbells',step:0.5,equip:'dumbbells',view:'Vooraanzicht',
+    steps:['Sta rechtop met een licht gewicht in elke hand. Breng je armen gestrekt opzij tot schouderhoogte, als een T. Je duimen wijzen omhoog.','Breng je armen vanuit die T met gestrekte armen zo ver mogelijk omhoog, tot boven je hoofd.','Laat ze rustig terugzakken tot de T op schouderhoogte en herhaal.','Houd je schouders laag: trek ze niet op naar je oren.'],
+    primary:['Schouders (zijkant en voorkant)','Supraspinatus (rotatorenmanchet)'],secondary:['Trapezius (boven en onder)','Serratus anterior'],
+    shoulder:'Houd je duimen omhoog en iets naar achter gedraaid: dat geeft je schouder boven schouderhoogte de meeste ruimte. Licht gewicht, rustig tempo en niet verder dan pijnvrij.',
+    anim(R,e){const ls=P(137,82),rs=P(183,82),lh=P(150,140),rh=P(170,140);R.line(P(60,200),P(260,200),'floor');
+      R.line(lh,P(148,199),'body');R.line(rh,P(172,199),'body');R.line(ls,lh,'body');R.line(rs,rh,'body');R.line(lh,rh,'body');R.line(ls,rs,'body');R.line(P(160,70),P(160,82),'body');R.dot(P(160,58),12,'body');
+      R.arc(ls,58,180,248,false,'guide');R.arc(rs,58,0,-68,true,'guide');
+      const la=mix(180,248,e),ra=mix(0,-68,e),lw=go(ls,58,la),rw=go(rs,58,ra);
+      R.line(ls,lw,'body');R.line(rs,rw,'body');R.line(go(lw,8,la+90),go(lw,8,la-90),'kit');R.line(go(rw,8,ra+90),go(rw,8,ra-90),'kit');
+      R.line(ls,go(ls,20,la),'work');R.line(rs,go(rs,20,ra),'work');R.dot(ls,7,'work');R.dot(rs,7,'work')}},
 };
 const PAIRS=[['legpress','row'],['legcurl','chestpress'],['legext','reversefly'],['backext','lateral'],['calf','extrot']];
 const EXTRAS=['triceps','biceps'];
-const SBLOCK=['wallslide','scapinc','scapfloor','bandrow'],SB=new Set(SBLOCK);
+const SBLOCK=['wallslide','scapinc','shtap','scapfloor','bandrow','erpress'],SB=new Set(SBLOCK);
 const ALL=[...PAIRS.flat(),...EXTRAS,...SBLOCK];
 const SHOULDER_EX=new Set(['chestpress','row','reversefly','lateral','extrot',...SBLOCK]);
 
@@ -961,7 +990,7 @@ function lastByExercise(beforeDate,excludeId){
   const out={};
   for(const s of viewSessions()){
     if(s.id===excludeId||s.date>beforeDate)continue;
-    for(const en of (s.entries||[])){if(en&&en.sets&&en.sets.length)out[en.id]={date:s.date,sets:en.sets,pain:en.pain}}
+    for(const en of (s.entries||[])){if(en&&en.sets&&en.sets.length)out[en.id]={date:s.date,sets:en.sets,pain:en.pain,next:en.next}}
   }
   return out;
 }
@@ -971,14 +1000,12 @@ function defaultSets(wk){return inLearn(wk)?2:3}
 function stepUp(l){const ls=l.sets;return ls.length>=3&&ls[ls.length-1].reps>=15}
 function newDraft(date){
   date=date||todayStr();
-  const wk=weekOf(date),n=defaultSets(wk),maxOn=!inLearn(wk),last=lastByExercise(date,null),sets={},bumped={},lighter={};
+  const wk=weekOf(date),n=defaultSets(wk),last=lastByExercise(date,null),sets={};
   for(const id of ALL){
-    const l=last[id],ex=EX[id];let add=0;
-    if(l&&maxOn&&stepUp(l)&&!(l.pain>=4)&&!(ex.bw&&!(l.sets[0].kg>0))){add=ex.step;bumped[id]=true}
-    if(l&&SHOULDER_EX.has(id)&&!ex.ro&&painFlag(id,date)){add=-ex.step;delete bumped[id];lighter[id]=true}
-    sets[id]=ex.ro?Array.from({length:3},()=>({kg:'',reps:''})):Array.from({length:n},(_,i)=>({kg:l?fmtKg(Math.max(0,(l.sets[i]||l.sets[l.sets.length-1]).kg+add)):'',reps:''}));
+    const l=last[id],cnt=Math.max(SB.has(id)?3:n,l&&l.sets?Math.min(l.sets.length,6):0);
+    sets[id]=Array.from({length:cnt},()=>({kg:'',reps:''}));
   }
-  return {date,sessionId:null,savedAt:null,dirty:false,sets,note:'',padel:null,walk:null,bumped,lighter,pain:{},painPts:{},painTypes:{},startedAt:null,lastAt:null,stale:false};
+  return {date,sessionId:null,savedAt:null,dirty:false,sets,note:'',padel:null,walk:null,bumped:{},lighter:{},next:{},pain:{},painPts:{},painTypes:{},startedAt:null,lastAt:null,stale:false};
 }
 let draft=lsGet(LS_DRAFT,null);
 if(!draft||!draft.sets||!DATE_RE.test(draft.date||'')){draft=newDraft()}
@@ -986,6 +1013,7 @@ for(const id of ALL){if(!Array.isArray(draft.sets[id])||!draft.sets[id].length)d
 if(draft.padel===undefined)draft.padel=null;
 if(draft.walk===undefined)draft.walk=null;
 if(!draft.bumped)draft.bumped={};
+if(!draft.next)draft.next={};
 if(!draft.pain)draft.pain={};
 if(!draft.painPts)draft.painPts={};
 if(!draft.painTypes)draft.painTypes={};
@@ -1073,27 +1101,27 @@ function quickWeigh(){
 
 /* ---------- Training view ---------- */
 function isDone(id){const rows=draft.sets[id];return !!rows&&rows.length>0&&rows.every(r=>parseInt(r.reps,10)>0)}
-function setRow(id,i,r,isMax){
+function setRow(id,i,r,isMax,g){
   const ex=EX[id],done=parseInt(r.reps,10)>0;
   return `<div class="set${ex.ro?' ro':''}" data-i="${i}">
     <button class="sl${done?' done':''}" type="button" data-act="fill" aria-pressed="${done}" aria-label="${esc(ex.name)} ${isMax?'max-set':'set '+(i+1)} gedaan"><span class="ck" aria-hidden="true"></span>${isMax?'<span class="mx">Max</span>':'Set '+(i+1)}</button>
-    ${ex.ro?`<span class="eq">${esc(ex.equip)}</span>`:`<div class="stp"><button type="button" data-act="kg-" aria-label="Gewicht omlaag">−</button><input id="kg-${id}-${i}" data-f="kg" inputmode="decimal" autocomplete="off" value="${esc(r.kg)}" placeholder="${ex.bw?'0':'kg'}" aria-label="${esc(ex.name)} set ${i+1} gewicht in kg"><button type="button" data-act="kg+" aria-label="Gewicht omhoog">+</button></div>`}
-    <div class="stp"><button type="button" data-act="r-" aria-label="Herhaling minder">−</button><input id="r-${id}-${i}" data-f="reps" inputmode="numeric" autocomplete="off" value="${esc(r.reps)}" placeholder="${ex.ro?'aantal':'12'}" aria-label="${esc(ex.name)} set ${i+1} herhalingen"><button type="button" data-act="r+" aria-label="Herhaling meer">+</button></div>
+    ${ex.ro?`<span class="eq">${esc(ex.equip)}</span>`:`<div class="stp"><button type="button" data-act="kg-" aria-label="Gewicht omlaag">−</button><input id="kg-${id}-${i}" data-f="kg" inputmode="decimal" autocomplete="off" value="${esc(r.kg)}" placeholder="${g&&g.kg!==''?esc(g.kg):(ex.bw?'0':'kg')}" aria-label="${esc(ex.name)} set ${i+1} gewicht in kg"><button type="button" data-act="kg+" aria-label="Gewicht omhoog">+</button></div>`}
+    <div class="stp"><button type="button" data-act="r-" aria-label="Herhaling minder">−</button><input id="r-${id}-${i}" data-f="reps" inputmode="numeric" autocomplete="off" value="${esc(r.reps)}" placeholder="${g?esc(g.reps):(SB.has(id)?'aantal':'12')}" aria-label="${esc(ex.name)} set ${i+1} herhalingen"><button type="button" data-act="r+" aria-label="Herhaling meer">+</button></div>
   </div>`;
 }
 function prevLine(id,last,maxOn){
-  if(EX[id].ro){
-    if(!last)return `<p class="prev">Nog niet gedaan. Doe per set zoveel herhalingen als je met goede techniek haalt.</p>`;
+  const nx=last&&last.next&&!EX[id].ro?` <span class="chip${last.next==='up'?' good':last.next==='down'?' warn':''}">${NEXT_TXT[last.next]}</span>`:'';
+  if(SB.has(id)){
+    if(!last)return `<p class="prev">Nog niet gedaan. ${EX[id].ro?'':'Kies een licht gewicht en '}${EX[id].ro?'Doe':'doe'} per set zoveel herhalingen als je met goede techniek haalt.</p>`;
     const pf=!draft.sessionId&&painFlag(id,draft.date),pt=typeof last.pain==='number'?` · <span class="${last.pain>=4?'pain-hi':''}">pijn ${last.pain}</span>`:'';
-    return `<p class="prev">Vorige keer, ${esc(fmtDate(last.date))}: ${last.sets.map(x=>x.reps+'×').join(' · ')}${pt}</p>${pf?`<p class="stall-tip">${esc(painTip(id,false))}</p>`:''}`;
+    return `<p class="prev">Vorige keer, ${esc(fmtDate(last.date))}: ${last.sets.map(x=>EX[id].ro?x.reps+'×':esc(fmtKg(x.kg))+'×'+x.reps).join(' · ')}${pt}${nx}</p>${pf?`<p class="stall-tip">${esc(painTip(id,false))}</p>`:''}`;
   }
   if(!last)return `<p class="prev">Nog niet gedaan. Kies een gewicht waarmee je 12 haalt met nog 2 à 3 over.</p>`;
-  const ls=last.sets,fresh=!draft.sessionId,bumped=draft.bumped&&draft.bumped[id]&&fresh;
-  const pf=SHOULDER_EX.has(id)&&fresh&&painFlag(id,draft.date),lighter=pf&&draft.lighter&&draft.lighter[id];
-  const tip=!pf&&maxOn&&stepUp(last)&&!(last.pain>=4)?` <span class="chip good">stap zwaarder${bumped?': +'+esc(fmtKg(EX[id].step))+' kg ingevuld':''}</span>`:'';
-  const st=!pf&&maxOn&&fresh&&!tip?stall(id,viewSessions().filter(x=>x.date<=draft.date)):null;
+  const ls=last.sets,fresh=!draft.sessionId;
+  const pf=SHOULDER_EX.has(id)&&fresh&&painFlag(id,draft.date);
+  const st=!pf&&maxOn&&fresh?stall(id,viewSessions().filter(x=>x.date<=draft.date)):null;
   const pt=typeof last.pain==='number'?` · <span class="${last.pain>=4?'pain-hi':''}">pijn ${last.pain}</span>`:'';
-  return `<p class="prev">Vorige keer, ${esc(fmtDate(last.date))}: ${ls.map(s=>esc(fmtKg(s.kg))+'×'+s.reps).join(' · ')}${pt}${tip}${st?' <span class="chip warn">stilstand</span>':''}</p>${st?`<p class="stall-tip">${esc(stallTip(id,st))}</p>`:''}${pf?`<p class="stall-tip">${esc(painTip(id,lighter))}</p>`:''}`;
+  return `<p class="prev">Vorige keer, ${esc(fmtDate(last.date))}: ${ls.map(s=>esc(fmtKg(s.kg))+'×'+s.reps).join(' · ')}${pt}${nx}${st?' <span class="chip warn">stilstand</span>':''}</p>${st?`<p class="stall-tip">${esc(stallTip(id,st))}</p>`:''}${pf?`<p class="stall-tip">${esc(painTip(id,false))}</p>`:''}`;
 }
 function setSummary(id){
   const ex=EX[id];if(ex.ro)return draft.sets[id].map(r=>esc(r.reps)+'×').join(' · ');
@@ -1102,16 +1130,17 @@ function setSummary(id){
 function card(id,last){
   const ex=EX[id],rows=draft.sets[id],maxOn=!inLearn(weekOf(draft.date));
   if(activeEx!==id){
-    const done=isDone(id),n=rows.filter(r=>parseInt(r.reps,10)>0).length,st=done?'klaar':n?n+'/'+rows.length:'';
+    const done=isDone(id),n=rows.filter(r=>parseInt(r.reps,10)>0).length,nx=draft.next&&draft.next[id],st=(done?'klaar':n?n+'/'+rows.length:'')+(nx&&n?' '+NEXT_SYM[nx]:'');
     return `<article class="ex min${done?' done':''}" data-ex="${id}"><button class="ex-row" type="button" data-open="${id}" aria-expanded="false" aria-label="${esc(ex.name)}, ${done?'klaar':n?n+' van '+rows.length+' sets gedaan':'nog niet gedaan'}. Openen"><span class="ck${done?' on':''} big" aria-hidden="true"></span><span class="code-s">${ex.code}</span><span class="ex-nm">${esc(ex.name)}</span><span class="ex-st">${st}</span><svg class="ex-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></article>`;
   }
   return `<article class="ex" data-ex="${id}">
     <div class="ex-h"><span class="code">${ex.code}</span><div class="ex-t" data-close><h3>${esc(ex.name)}</h3><p>${esc(ex.device)}</p></div><button class="info-btn" type="button" data-info="${id}" aria-label="Uitleg ${esc(ex.name)}">i</button><button class="ex-x" type="button" data-close aria-expanded="true" aria-label="${esc(ex.name)} inklappen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>
     <div class="prev-w">${prevLine(id,last,maxOn)}</div>
     <div class="sets"><div class="set-h"><span></span><span>${ex.ro?'':'Gewicht (kg)'}</span><span>Herhalingen</span></div>
-    ${rows.map((r,i)=>setRow(id,i,r,!ex.ro&&maxOn&&rows.length>=3&&i===rows.length-1)).join('')}</div>
+    ${(()=>{const g=ghostFrom(last,id);return rows.map((r,i)=>setRow(id,i,r,!SB.has(id)&&maxOn&&rows.length>=3&&i===rows.length-1,g?(g[i]||g[g.length-1]):null)).join('')})()}</div>
     <div class="set-act"><button class="btn-sm" type="button" data-rows="-1">− set</button><button class="btn-sm" type="button" data-rows="1">+ set</button></div>
     ${SHOULDER_EX.has(id)?painRow(id):''}
+    ${nextRow(id)}
   </article>`;
 }
 function replaceCard(id){
@@ -1145,8 +1174,8 @@ function renderTraining(){
   $('#t-date').value=draft.date;
   $('#t-week').innerHTML=hasPlan()&&wk>=1&&wk<=nWeeks()?`Week ${wk}<small>van ${nWeeks()}</small>`:esc(weekLabel(wk));
   $('#t-scheme').innerHTML=inLearn(wk)
-    ?`<span><b>T/m week 3: 2 sets van 12</b>, nog zonder maximale set. Kies een gewicht waarbij je na 12 herhalingen nog 3 over hebt.</span><span class="pinline">Set af? Tik op Set 1 of Set 2: dan staan er 12 herhalingen.</span>`
-    :`<span><b>3 sets van 12</b> met hetzelfde gewicht. De laatste set ga je maximaal: tot je techniek breekt of de pijn boven 3 op 10 komt.</span><span class="pinline"><span class="pin" aria-hidden="true"></span>Haal je 15 of meer in de laatste set, dan zet de app volgende keer een stap zwaarder klaar.</span><span class="pinline">Set af? Tik op Set 1, 2 of Max: dan staan er 12 herhalingen.</span>`;
+    ?`<span><b>T/m week 3: 2 sets van 12</b>, nog zonder maximale set. Kies een gewicht waarbij je na 12 herhalingen nog 3 over hebt.</span><span class="pinline">Grijs = je vorige training. Set af? Tik op Set 1 of Set 2 om die waarden over te nemen.</span><span class="pinline">Kies na elke oefening bij "Volgende keer" of je zwaarder, gelijk of lichter gaat.</span>`
+    :`<span><b>3 sets van 12</b> met hetzelfde gewicht. De laatste set ga je maximaal: tot je techniek breekt of de pijn boven 3 op 10 komt.</span><span class="pinline">Grijs = je vorige training, aangepast aan wat je toen koos. Set af? Tik op Set 1, 2 of Max om die waarden over te nemen.</span><span class="pinline"><span class="pin" aria-hidden="true"></span>Kies na elke oefening bij "Volgende keer" of je zwaarder, gelijk of lichter gaat. Haal je 15 of meer in je laatste set, dan is zwaarder logisch.</span>`;
   $('#t-list').innerHTML=PAIRS.map((p,i)=>`<div class="pair"><div class="pair-head">Duo ${i+1} · om en om</div>${p.map(id=>card(id,last[id])).join('')}</div>`).join('');
   $('#t-extra-list').innerHTML=`<div class="pair">${EXTRAS.map(id=>card(id,last[id])).join('')}</div>`;
   $('#t-sh-list').innerHTML=`<div class="pair">${SBLOCK.map(id=>card(id,last[id])).join('')}</div>`;
@@ -1205,50 +1234,56 @@ function onTrainClick(ev){
   if(pb){
     const n=+pb.dataset.pain;draft.pain=draft.pain||{};
     if(draft.pain[id]===n)delete draft.pain[id];else draft.pain[id]=n;
-    touch();rerenderPain(cardEl,id);
+    touch();rerenderPain(cardEl,id);refreshNext(cardEl,id);
     const nb=cardEl.querySelector('[data-pain="'+n+'"]');if(nb)nb.focus({preventScroll:true});
     return;
   }
+  const nb=ev.target.closest('[data-next]');
+  if(nb){draft.next=draft.next||{};const k=nb.dataset.next;if(draft.next[id]===k)delete draft.next[id];else draft.next[id]=k;touch();refreshNext(cardEl,id);return}
   const act=ev.target.closest('[data-act]');if(!act)return;
   const row=act.closest('.set'),i=+row.dataset.i,r=draft.sets[id][i],a=act.dataset.act;
   if(a==='fill'){
     if(parseInt(r.reps,10)>0){r.reps=''}
-    else if(ex.ro){
+    else if(SB.has(id)){
       const rows=draft.sets[id],l=lastByExercise(draft.date,draft.sessionId)[id];let v='';
       if(l&&l.sets.length)v=String((l.sets[i]||l.sets[l.sets.length-1]).reps);
       if(!v)for(let j=i-1;j>=0;j--){if(parseInt(rows[j].reps,10)>0){v=rows[j].reps;break}}
-      if(!v){const p=row.querySelector('[data-f="reps"]');if(p)p.focus();return}
+      if(!ex.ro&&r.kg===''){const g=ghostOf(id,i);let k=g&&g.kg!==''?g.kg:'';if(k==='')for(let j=i-1;j>=0;j--){if(rows[j].kg!==''){k=rows[j].kg;break}}r.kg=k}
+      if(!v){syncRow(row,r);touch();const p=row.querySelector(!ex.ro&&!r.kg?'[data-f="kg"]':'[data-f="reps"]');if(p)p.focus();return}
       r.reps=v;
     }
     else{
-      r.reps='12';
+      const g=ghostOf(id,i);
+      r.reps=g?g.reps:'12';
       if(r.kg===''){
-        const rows=draft.sets[id];let k='';
-        for(let j=i-1;j>=0;j--){if(rows[j].kg!==''){k=rows[j].kg;break}}
+        const rows=draft.sets[id];let k=g&&g.kg!==''?g.kg:'';
+        if(k==='')for(let j=i-1;j>=0;j--){if(rows[j].kg!==''){k=rows[j].kg;break}}
         if(k===''){const l=lastByExercise(draft.date,draft.sessionId)[id];if(l&&l.sets.length)k=fmtKg((l.sets[i]||l.sets[l.sets.length-1]).kg)}
         if(k===''&&ex.bw)k='0';
         r.kg=k;
       }
     }
   }
-  else if(a==='kg-'||a==='kg+'){let v=num(r.kg);if(isNaN(v))v=0;v=a==='kg+'?v+ex.step:Math.max(0,v-ex.step);r.kg=fmtKg(v)}
-  else{let v=parseInt(r.reps,10);if(isNaN(v))v=12;else v=a==='r+'?v+1:Math.max(0,v-1);r.reps=String(v)}
+  else if(a==='kg-'||a==='kg+'){let v=num(r.kg);if(isNaN(v)){const g=ghostOf(id,i);v=g&&g.kg!==''?num(g.kg):0;if(isNaN(v))v=0}v=a==='kg+'?v+ex.step:Math.max(0,v-ex.step);r.kg=fmtKg(v)}
+  else{let v=parseInt(r.reps,10);if(isNaN(v)){const g=ghostOf(id,i),gv=g?parseInt(g.reps,10):NaN;v=isNaN(gv)?12:Math.max(0,a==='r+'?gv+1:gv-1)}else v=a==='r+'?v+1:Math.max(0,v-1);r.reps=String(v)}
+  if((a==='r+'||a==='r-')&&r.kg===''&&!ex.ro){const g=ghostOf(id,i);if(g&&g.kg!=='')r.kg=g.kg}
   if(a!=='kg-'&&a!=='kg+'&&parseInt(r.reps,10)>0)markSet();
-  syncRow(row,r);touch();
+  syncRow(row,r);touch();refreshNext(cardEl,id);
   if(a==='fill'&&!r.kg&&!ex.bw){const k=row.querySelector('[data-f="kg"]');if(k)k.focus()}
 }
 function onTrainInput(ev){
   const inp=ev.target;if(!inp.dataset.f)return;
   const cardEl=inp.closest('.ex'),row=inp.closest('.set');if(!cardEl||!row)return;
-  const r=draft.sets[cardEl.dataset.ex][+row.dataset.i];r[inp.dataset.f]=inp.value.trim();syncRow(row,r);
-  if(inp.dataset.f==='reps'&&parseInt(r.reps,10)>0)markSet();
-  touch();
+  const id=cardEl.dataset.ex,i=+row.dataset.i,r=draft.sets[id][i];r[inp.dataset.f]=inp.value.trim();
+  if(inp.dataset.f==='reps'&&parseInt(r.reps,10)>0){markSet();if(r.kg===''&&!EX[id].ro){const g=ghostOf(id,i);if(g&&g.kg!=='')r.kg=g.kg}}
+  syncRow(row,r);touch();refreshNext(cardEl,id);
 }
 function buildEntries(){
   const entries=[];
   for(const id of ALL){
-    const sets=draft.sets[id].map(r=>({kg:num(r.kg),reps:parseInt(r.reps,10)})).filter(s=>s.reps>0).map(s=>({kg:isNaN(s.kg)?0:Math.round(s.kg*100)/100,reps:s.reps}));
-    if(sets.length){const en={id,sets};if(SHOULDER_EX.has(id)&&draft.pain&&typeof draft.pain[id]==='number'){en.pain=draft.pain[id];if(en.pain>=1){const pp=sanPts((draft.painPts||{})[id]),pt=sanTypes((draft.painTypes||{})[id]);if(pp.length)en.painPts=pp;if(pt.length)en.painTypes=pt}}entries.push(en)}
+    const g=EX[id].ro?null:ghostFrom(lastByExercise(draft.date,draft.sessionId)[id],id);
+    const sets=draft.sets[id].map((r,i)=>({kg:num(r.kg===''&&g?(g[i]||g[g.length-1]).kg:r.kg),reps:parseInt(r.reps,10)})).filter(s=>s.reps>0).map(s=>({kg:isNaN(s.kg)?0:Math.round(s.kg*100)/100,reps:s.reps}));
+    if(sets.length){const en={id,sets};if(!EX[id].ro&&draft.next&&NEXT_TXT[draft.next[id]])en.next=draft.next[id];if(SHOULDER_EX.has(id)&&draft.pain&&typeof draft.pain[id]==='number'){en.pain=draft.pain[id];if(en.pain>=1){const pp=sanPts((draft.painPts||{})[id]),pt=sanTypes((draft.painTypes||{})[id]);if(pp.length)en.painPts=pp;if(pt.length)en.painTypes=pt}}entries.push(en)}
   }
   return entries;
 }
@@ -1494,7 +1529,7 @@ function renderHistory(ss){
       <div class="hist-body"${isOpen?'':' hidden'}>
         ${s.padelMin?`<div class="hist-ex">Padel<span>${s.padelMin} minuten</span></div>`:''}
         ${s.walkMin?`<div class="hist-ex">Wandelen<span>${s.walkMin} minuten</span></div>`:''}
-        ${(s.entries||[]).map(en=>`<div class="hist-ex">${esc(EX[en.id]?EX[en.id].name:en.id)}<span>${en.sets.map(x=>EX[en.id]&&EX[en.id].ro?x.reps+'×':esc(fmtKg(x.kg))+' kg × '+x.reps).join(' · ')}${typeof en.pain==='number'?' · pijn '+en.pain+(painDesc(en.painPts,en.painTypes)?' ('+esc(painDesc(en.painPts,en.painTypes))+')':''):''}</span></div>`).join('')}
+        ${(s.entries||[]).map(en=>`<div class="hist-ex">${esc(EX[en.id]?EX[en.id].name:en.id)}<span>${en.sets.map(x=>EX[en.id]&&EX[en.id].ro?x.reps+'×':esc(fmtKg(x.kg))+' kg × '+x.reps).join(' · ')}${typeof en.pain==='number'?' · pijn '+en.pain+(painDesc(en.painPts,en.painTypes)?' ('+esc(painDesc(en.painPts,en.painTypes))+')':''):''}${NEXT_TXT[en.next]?' · '+NEXT_TXT[en.next]:''}</span></div>`).join('')}
         ${s.note?`<p class="hist-note">${esc(s.note)}</p>`:''}
         <div class="hist-act"><button class="btn-sm" type="button" data-edit="${esc(s.id)}">Bewerken</button><button class="btn-sm danger" type="button" data-dels="${esc(s.id)}">Verwijderen</button></div>
       </div></div>`;
@@ -1513,8 +1548,8 @@ function editSession(id){
   const s=viewSessions().find(x=>x.id===id);if(!s)return;
   const n=defaultSets(weekOf(s.date)),sets={},old=draft,wasDirty=draft.dirty&&draft.sessionId!==id;
   for(const ex of ALL){const en=(s.entries||[]).find(e=>e.id===ex);sets[ex]=en?en.sets.map(x=>({kg:fmtKg(x.kg),reps:String(x.reps)})):Array.from({length:n},()=>({kg:'',reps:''}))}
-  const pain={},painPts={},painTypes={};(s.entries||[]).forEach(e=>{if(typeof e.pain==='number')pain[e.id]=e.pain;if(e.painPts)painPts[e.id]=sanPts(e.painPts);if(e.painTypes)painTypes[e.id]=sanTypes(e.painTypes)});
-  draft={date:s.date,sessionId:s.id,savedAt:s.savedAt||null,dirty:false,sets,note:s.note||'',padel:s.padelMin||null,walk:s.walkMin?String(s.walkMin):null,bumped:{},lighter:{},pain,painPts,painTypes,startedAt:null,lastAt:null,durationMin:s.durationMin||null,stale:false};
+  const pain={},painPts={},painTypes={},next={};(s.entries||[]).forEach(e=>{if(NEXT_TXT[e.next])next[e.id]=e.next;if(typeof e.pain==='number')pain[e.id]=e.pain;if(e.painPts)painPts[e.id]=sanPts(e.painPts);if(e.painTypes)painTypes[e.id]=sanTypes(e.painTypes)});
+  draft={date:s.date,sessionId:s.id,savedAt:s.savedAt||null,dirty:false,sets,note:s.note||'',padel:s.padelMin||null,walk:s.walkMin?String(s.walkMin):null,bumped:{},lighter:{},next,pain,painPts,painTypes,startedAt:null,lastAt:null,durationMin:s.durationMin||null,stale:false};
   activeEx=null;saveDraft();renderTraining();location.hash='#training';
   if(wasDirty)snack('Training geladen; je niet-opgeslagen invoer is vervangen',()=>{draft=old;saveDraft();activeEx=null;renderTraining()});
   else toast('Training geladen om te bewerken');
@@ -1523,7 +1558,7 @@ function editSession(id){
 /* ---------- Per exercise: series, stagnation, detail sheet ---------- */
 function seriesFor(id,ss){const out=[];for(const s of ss){const en=(s.entries||[]).find(e=>e.id===id);if(en&&en.sets&&en.sets.length)out.push({date:s.date,sets:en.sets,pain:en.pain})}return out}
 function stall(id,ss){
-  if(EX[id]&&EX[id].ro)return null;
+  if(SB.has(id))return null;
   const ser=seriesFor(id,ss||viewSessions()).filter(x=>!inLearn(weekOf(x.date))&&x.sets.length>=3);
   if(ser.length<3)return null;
   const l3=ser.slice(-3),top=x=>Math.max(...x.sets.map(s=>s.kg||0)),lastR=x=>x.sets[x.sets.length-1].reps,k=top(l3[0]);
@@ -1609,6 +1644,7 @@ function painFlag(id,beforeDate){
   const l2=ser.slice(-2);return l2.length===2&&l2.every(en=>typeof en.pain==='number'&&en.pain>=4);
 }
 function painTip(id,lighter){
+  if(!(EX[id]&&EX[id].ro))return 'Twee keer achter elkaar schouderpijn 4 of hoger. Kies na deze oefening bij "Volgende keer" voor lichter en houd de pijn op 3 of lager; blijft het pijn doen, laat je schouder dan nakijken.';
   if(EX[id]&&EX[id].ro)return 'Twee keer achter elkaar schouderpijn 4 of hoger. Doe minder herhalingen, een kleinere beweging of een lichter elastiek. Houd de pijn op 3 of lager; blijft het pijn doen, laat je schouder dan nakijken.';
   return 'Twee keer achter elkaar schouderpijn 4 of hoger. '+(lighter?'Er staat al een stap lichter klaar.':'Ga een stap lichter.')+' Houd de pijn op 3 of lager; blijft het pijn doen, laat je schouder dan nakijken.';
 }
@@ -1778,6 +1814,29 @@ function renderPainOverview(ss){
     ${bars.length?`<div class="pain-h"><span>Gemiddelde pijn per oefening</span><span>aantal keer</span></div><div class="sp-bars">${bars.map(([id,v,n])=>`<div class="sp-bar"><span>${esc(EX[id]?EX[id].name:id)}</span><span class="sp-t"><i style="width:${Math.max(3,v*10)}%;background:${painCol(Math.round(v))}"></i></span><b>${nf1.format(v)}</b><small>${n}×</small></div>`).join('')}</div>`:''}`;
 }
 
+/* ---------- Ghost values (last training) and the choice for next time ---------- */
+const NEXT_TXT={up:'zwaarder gekozen',same:'gelijk gekozen',down:'lichter gekozen'},NEXT_SYM={up:'↑',same:'=',down:'↓'};
+function ghostFrom(last,id){
+  if(!last||!last.sets||!last.sets.length)return null;
+  const ex=EX[id],d=last.next==='up'?1:last.next==='down'?-1:0;
+  return last.sets.map(s=>({kg:ex.ro?'':fmtKg(Math.max(0,(s.kg||0)+d*ex.step)),reps:String(s.reps)}));
+}
+function ghostOf(id,i){const g=ghostFrom(lastByExercise(draft.date,draft.sessionId)[id],id);return g?(g[i]||g[g.length-1]):null}
+function nextRow(id){
+  const ex=EX[id];if(ex.ro)return '';
+  const v=draft.next&&draft.next[id]||null,rows=draft.sets[id],maxOn=!inLearn(weekOf(draft.date));
+  let kgs=rows.map(r=>num(r.kg)).filter(k=>!isNaN(k));
+  if(!kgs.length){const g=ghostFrom(lastByExercise(draft.date,draft.sessionId)[id],id);if(g)kgs=g.map(x=>num(x.kg)).filter(k=>!isNaN(k))}
+  const base=kgs.length?Math.max(...kgs):null;
+  const lab=d=>base!=null?fmtKg(Math.max(0,base+d*ex.step))+' kg':(d===0?'zelfde':(d>0?'+':'−')+fmtKg(ex.step)+' kg');
+  const pain=draft.pain&&typeof draft.pain[id]==='number'?draft.pain[id]:null,lastR=parseInt((rows[rows.length-1]||{}).reps,10);
+  let hint='',hcls='';
+  if(pain!=null&&pain>=4){hint='Pijn 4 of hoger: kies gelijk of lichter.';hcls=' warn'}
+  else if(!SB.has(id)&&maxOn&&rows.length>=3&&lastR>=15){hint='15 of meer in je laatste set: tijd voor zwaarder.'}
+  return `<div class="next" data-nextrow><div class="pain-h"><span>Volgende keer</span><span>${v?esc(NEXT_TXT[v]):'kies na je laatste set'}</span></div><div class="seg3" role="radiogroup" aria-label="Gewicht volgende keer bij ${esc(ex.name)}">${[['down','Lichter',-1],['same','Gelijk',0],['up','Zwaarder',1]].map(([k,t,d])=>`<button type="button" role="radio" data-next="${k}" aria-checked="${v===k}"><b>${t}</b><small>${lab(d)}</small></button>`).join('')}</div>${hint?`<p class="next-hint${hcls}">${esc(hint)}</p>`:''}</div>`;
+}
+function refreshNext(cardEl,id){const nr=cardEl.querySelector('[data-nextrow]');if(nr){const t=document.createElement('div');t.innerHTML=nextRow(id);if(t.firstElementChild)nr.replaceWith(t.firstElementChild)}}
+
 /* ---------- Export ---------- */
 function fmtSet(id,x){if(EX[id]&&EX[id].ro)return x.reps+'×';return (EX[id]&&EX[id].bw&&!x.kg?'eigen gewicht':fmtKg(x.kg)+' kg')+' × '+x.reps}
 function progressSummary(ss){
@@ -1799,7 +1858,7 @@ function exportText(ws,ss){
   if(hasPlan())L.push('Plan: van '+nf1.format(settings.startKg)+' kg op '+fmtLong(settings.startDate)+' naar '+nf1.format(settings.goalKg)+' kg op '+fmtLong(settings.endDate)+' ('+nWeeks()+' weken, rechte lijn). Nu: '+weekLabel(weekOf(todayStr())).toLowerCase()+' van '+nWeeks()+'.');
   else L.push('Plan: nog niet ingesteld.');
   {const fc=forecast(ws);if(fc&&fc.ok)L.push('Tempo laatste 14 dagen: '+signed(fc.slopeW)+' kg per week ('+fc.n+' metingen). Voorspelling op de einddatum bij dit tempo: '+nf1.format(fc.endKg)+' kg.')}
-  L.push('Training: 3x per week full-body krachttraining. T/m week 3 2 sets van 12; vanaf week 4 3 sets van 12 met de laatste set maximaal. Padel en wandelen staan in minuten. Schouderblok (thuis of in de sportschool): 4 oefeningen met elastiek of eigen gewicht, 3 sets, herhalingen zolang de techniek goed is.');
+  L.push('Training: 3x per week full-body krachttraining. T/m week 3 2 sets van 12; vanaf week 4 3 sets van 12 met de laatste set maximaal. Padel en wandelen staan in minuten. Schouderblok (thuis of in de sportschool): 6 oefeningen met elastiek, eigen gewicht of lichte dumbbells, 3 sets, herhalingen zolang de techniek goed is.');
   L.push('');
   L.push('GEWICHT');
   if(!ws.length)L.push('Nog geen metingen.');
@@ -1823,7 +1882,7 @@ function exportText(ws,ss){
     L.push(x.date+' ('+weekLabel(weekOf(x.date)).toLowerCase()+')');
     if(x.padelMin)L.push('- Padel: '+x.padelMin+' min');
     if(x.walkMin)L.push('- Wandelen: '+x.walkMin+' min');
-    (x.entries||[]).forEach(en=>L.push('- '+(EX[en.id]?EX[en.id].name:en.id)+': '+en.sets.map(st=>fmtSet(en.id,st)).join(', ')+(typeof en.pain==='number'?' (schouderpijn '+en.pain+'/10'+(painDesc(en.painPts,en.painTypes)?'; '+painDesc(en.painPts,en.painTypes):'')+')':'')));
+    (x.entries||[]).forEach(en=>L.push('- '+(EX[en.id]?EX[en.id].name:en.id)+': '+en.sets.map(st=>fmtSet(en.id,st)).join(', ')+(typeof en.pain==='number'?' (schouderpijn '+en.pain+'/10'+(painDesc(en.painPts,en.painTypes)?'; '+painDesc(en.painPts,en.painTypes):'')+')':'')+(en.next?' (volgende keer '+({up:'zwaarder',same:'gelijk',down:'lichter'})[en.next]+')':'')));
     if(x.durationMin)L.push('- Duur: '+x.durationMin+' min (eerste tot laatste set)');
     if(x.note)L.push('  Notitie: '+String(x.note).replace(/\s+/g,' '));
   });
@@ -1880,7 +1939,7 @@ function importBackup(file){
     for(const w of d.weights){if(w&&typeof w.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(w.date)&&typeof w.kg==='number'){store.weights[w.date]={date:w.date,kg:w.kg,moment:w.moment==='avond'?'avond':'ochtend'};nw++}}
     for(const x of d.sessions){
       if(!x||typeof x.id!=='string'||!/^[A-Za-z0-9_.~:@+-]{1,100}$/.test(x.id)||typeof x.date!=='string')continue;
-      const entries=(x.entries||[]).filter(en=>en&&EX[en.id]&&Array.isArray(en.sets)).map(en=>{const o={id:en.id,sets:en.sets.filter(st=>st&&typeof st.reps==='number').map(st=>({kg:typeof st.kg==='number'?st.kg:0,reps:st.reps}))};if(typeof en.pain==='number'&&en.pain>=0&&en.pain<=10)o.pain=Math.round(en.pain);const pp=sanPts(en.painPts),pt=sanTypes(en.painTypes);if(pp.length)o.painPts=pp;if(pt.length)o.painTypes=pt;return o}).filter(en=>en.sets.length);
+      const entries=(x.entries||[]).filter(en=>en&&EX[en.id]&&Array.isArray(en.sets)).map(en=>{const o={id:en.id,sets:en.sets.filter(st=>st&&typeof st.reps==='number').map(st=>({kg:typeof st.kg==='number'?st.kg:0,reps:st.reps}))};if(typeof en.pain==='number'&&en.pain>=0&&en.pain<=10)o.pain=Math.round(en.pain);const pp=sanPts(en.painPts),pt=sanTypes(en.painTypes);if(pp.length)o.painPts=pp;if(pt.length)o.painTypes=pt;if(NEXT_TXT[en.next])o.next=en.next;return o}).filter(en=>en.sets.length);
       const mins=v=>typeof v==='number'&&v>0&&v<=600?Math.round(v):null,padelMin=mins(x.padelMin),walkMin=mins(x.walkMin);
       if(!entries.length&&!padelMin&&!walkMin)continue;
       store.sessions[x.id]={date:x.date,week:weekOf(x.date),savedAt:x.savedAt||null,entries,padelMin,walkMin,durationMin:mins(x.durationMin),note:typeof x.note==='string'?x.note.slice(0,1000):''};ns++;
