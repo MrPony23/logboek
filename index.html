@@ -771,7 +771,7 @@ function inLearn(wk){return hasPlan()&&wk>=1&&wk<=3}
 function weekLabel(w){if(!hasPlan())return 'Geen plan';if(w<1)return 'Voor de start';if(w>nWeeks())return 'Na week '+nWeeks();return 'Week '+w}
 const dlong=new Intl.DateTimeFormat('nl-NL',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
 function fmtLong(s){return dlong.format(new Date(parseD(s)))}
-const APP_VERSION='v12';
+const APP_VERSION='v13';
 let swWaiting=null,swReload=false;
 let toastT=0;
 function toast(msg){hideSnack();const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600)}
@@ -996,7 +996,7 @@ function lastByExercise(beforeDate,excludeId){
 }
 
 /* ---------- Draft (this device) ---------- */
-function defaultSets(wk){return inLearn(wk)?2:3}
+function defaultSets(wk){return 3}
 function stepUp(l){const ls=l.sets;return ls.length>=3&&ls[ls.length-1].reps>=15}
 function newDraft(date){
   date=date||todayStr();
@@ -1009,7 +1009,8 @@ function newDraft(date){
 }
 let draft=lsGet(LS_DRAFT,null);
 if(!draft||!draft.sets||!DATE_RE.test(draft.date||'')){draft=newDraft()}
-for(const id of ALL){if(!Array.isArray(draft.sets[id])||!draft.sets[id].length)draft.sets[id]=[{kg:'',reps:''}]}
+if(!draft.dirty&&!draft.sessionId){draft=newDraft(draft.date)}
+for(const id of ALL){if(!Array.isArray(draft.sets[id])||!draft.sets[id].length)draft.sets[id]=[{kg:'',reps:''}];if(!draft.sessionId)while(draft.sets[id].length<3)draft.sets[id].push({kg:'',reps:''})}
 if(draft.padel===undefined)draft.padel=null;
 if(draft.walk===undefined)draft.walk=null;
 if(!draft.bumped)draft.bumped={};
@@ -1174,7 +1175,7 @@ function renderTraining(){
   $('#t-date').value=draft.date;
   $('#t-week').innerHTML=hasPlan()&&wk>=1&&wk<=nWeeks()?`Week ${wk}<small>van ${nWeeks()}</small>`:esc(weekLabel(wk));
   $('#t-scheme').innerHTML=inLearn(wk)
-    ?`<span><b>T/m week 3: 2 sets van 12</b>, nog zonder maximale set. Kies een gewicht waarbij je na 12 herhalingen nog 3 over hebt.</span><span class="pinline">Grijs = je vorige training. Set af? Tik op Set 1 of Set 2 om die waarden over te nemen.</span><span class="pinline">Kies na elke oefening bij "Volgende keer" of je zwaarder, gelijk of lichter gaat.</span>`
+    ?`<span><b>T/m week 3: 3 sets van 12</b>, nog zonder maximale set. Kies een gewicht waarbij je na 12 herhalingen nog 3 over hebt.</span><span class="pinline">Grijs = je vorige training. Set af? Tik op Set 1, 2 of 3 om die waarden over te nemen.</span><span class="pinline">Kies na elke oefening bij "Volgende keer" of je zwaarder, gelijk of lichter gaat.</span>`
     :`<span><b>3 sets van 12</b> met hetzelfde gewicht. De laatste set ga je maximaal: tot je techniek breekt of de pijn boven 3 op 10 komt.</span><span class="pinline">Grijs = je vorige training, aangepast aan wat je toen koos. Set af? Tik op Set 1, 2 of Max om die waarden over te nemen.</span><span class="pinline"><span class="pin" aria-hidden="true"></span>Kies na elke oefening bij "Volgende keer" of je zwaarder, gelijk of lichter gaat. Haal je 15 of meer in je laatste set, dan is zwaarder logisch.</span>`;
   $('#t-list').innerHTML=PAIRS.map((p,i)=>`<div class="pair"><div class="pair-head">Duo ${i+1} · om en om</div>${p.map(id=>card(id,last[id])).join('')}</div>`).join('');
   $('#t-extra-list').innerHTML=`<div class="pair">${EXTRAS.map(id=>card(id,last[id])).join('')}</div>`;
@@ -1858,7 +1859,7 @@ function exportText(ws,ss){
   if(hasPlan())L.push('Plan: van '+nf1.format(settings.startKg)+' kg op '+fmtLong(settings.startDate)+' naar '+nf1.format(settings.goalKg)+' kg op '+fmtLong(settings.endDate)+' ('+nWeeks()+' weken, rechte lijn). Nu: '+weekLabel(weekOf(todayStr())).toLowerCase()+' van '+nWeeks()+'.');
   else L.push('Plan: nog niet ingesteld.');
   {const fc=forecast(ws);if(fc&&fc.ok)L.push('Tempo laatste 14 dagen: '+signed(fc.slopeW)+' kg per week ('+fc.n+' metingen). Voorspelling op de einddatum bij dit tempo: '+nf1.format(fc.endKg)+' kg.')}
-  L.push('Training: 3x per week full-body krachttraining. T/m week 3 2 sets van 12; vanaf week 4 3 sets van 12 met de laatste set maximaal. Padel en wandelen staan in minuten. Schouderblok (thuis of in de sportschool): 6 oefeningen met elastiek, eigen gewicht of lichte dumbbells, 3 sets, herhalingen zolang de techniek goed is.');
+  L.push('Training: 3x per week full-body krachttraining. Altijd 3 sets van 12; vanaf week 4 is de laatste set maximaal. Padel en wandelen staan in minuten. Schouderblok (thuis of in de sportschool): 6 oefeningen met elastiek, eigen gewicht of lichte dumbbells, 3 sets, herhalingen zolang de techniek goed is.');
   L.push('');
   L.push('GEWICHT');
   if(!ws.length)L.push('Nog geen metingen.');
